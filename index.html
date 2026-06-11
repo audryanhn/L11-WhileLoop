@@ -1,0 +1,465 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+#game { min-height: 500px; padding: 1.5rem 1rem; }
+.screen { display: none; }
+.screen.active { display: block; }
+
+.menu-title { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 0.5rem; text-align: center; }
+.menu-sub { font-size: 14px; color: var(--color-text-secondary); text-align: center; margin-bottom: 2rem; }
+.menu-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 480px; margin: 0 auto; }
+.menu-card {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  text-align: left;
+}
+.menu-card:hover { border-color: var(--color-border-primary); }
+.menu-card .card-icon { font-size: 20px; margin-bottom: 8px; color: var(--color-text-secondary); }
+.menu-card .card-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+.menu-card .card-desc { font-size: 13px; color: var(--color-text-secondary); }
+.menu-card .card-levels { font-size: 12px; color: var(--color-text-tertiary); margin-top: 8px; }
+.card-badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); margin-bottom: 8px; }
+.badge-while { background: var(--color-background-info); color: var(--color-text-info); }
+.badge-dowhile { background: var(--color-background-success); color: var(--color-text-success); }
+
+.level-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
+.back-btn { background: none; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 6px 12px; cursor: pointer; font-size: 13px; color: var(--color-text-secondary); }
+.back-btn:hover { border-color: var(--color-border-primary); color: var(--color-text-primary); }
+.level-info { flex: 1; }
+.level-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
+.level-sub { font-size: 13px; color: var(--color-text-secondary); }
+.progress-bar { background: var(--color-background-secondary); border-radius: 99px; height: 6px; margin-top: 4px; }
+.progress-fill { height: 6px; border-radius: 99px; transition: width 0.3s; }
+.fill-blue { background: #378ADD; }
+.fill-green { background: #639922; }
+
+.question-card {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 12px;
+}
+.q-label { font-size: 12px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.q-story { font-size: 15px; color: var(--color-text-primary); margin-bottom: 1rem; line-height: 1.6; }
+.q-output-label { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 6px; }
+.q-output {
+  background: var(--color-background-tertiary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md);
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-text-primary);
+  white-space: pre;
+  margin-bottom: 1rem;
+}
+
+.code-area {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.code-area-header { padding: 10px 14px; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; gap: 8px; }
+.code-area-title { font-size: 13px; color: var(--color-text-secondary); font-family: var(--font-mono); }
+.blanks-container { padding: 14px; font-family: var(--font-mono); font-size: 14px; color: var(--color-text-primary); line-height: 2.2; }
+.code-line { white-space: pre; display: block; }
+.blank-input {
+  display: inline-block;
+  background: var(--color-background-secondary);
+  border: 1.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 2px 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-text-primary);
+  outline: none;
+  min-width: 60px;
+  width: auto;
+  vertical-align: middle;
+  transition: border-color 0.15s;
+}
+.blank-input:focus { border-color: #378ADD; }
+.blank-input.correct { border-color: #639922; background: var(--color-background-success); color: var(--color-text-success); }
+.blank-input.wrong { border-color: #E24B4A; background: var(--color-background-danger); color: var(--color-text-danger); animation: shake 0.3s; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+
+.action-row { display: flex; gap: 10px; align-items: center; }
+.run-btn {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 8px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+.run-btn:hover { background: var(--color-background-secondary); }
+.run-btn.primary { background: #185FA5; color: #fff; border-color: #185FA5; }
+.run-btn.primary:hover { background: #0C447C; border-color: #0C447C; }
+.run-btn.success-btn { background: #3B6D11; color: #fff; border-color: #3B6D11; }
+
+.feedback {
+  border-radius: var(--border-radius-md);
+  padding: 10px 14px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  display: none;
+}
+.feedback.show { display: flex; align-items: flex-start; gap: 8px; }
+.feedback.ok { background: var(--color-background-success); color: var(--color-text-success); border: 0.5px solid var(--color-border-success); }
+.feedback.err { background: var(--color-background-danger); color: var(--color-text-danger); border: 0.5px solid var(--color-border-danger); }
+.feedback.hint { background: var(--color-background-warning); color: var(--color-text-warning); border: 0.5px solid var(--color-border-warning); }
+
+.nav-row { display: flex; gap: 10px; justify-content: flex-end; }
+.complete-screen { text-align: center; padding: 2rem 1rem; }
+.complete-icon { font-size: 40px; color: #639922; margin-bottom: 1rem; }
+.complete-title { font-size: 22px; font-weight: 500; margin-bottom: 0.5rem; }
+.complete-sub { font-size: 15px; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
+.stars { font-size: 24px; letter-spacing: 4px; margin-bottom: 1.5rem; }
+</style>
+
+<div id="game">
+  <div id="screen-menu" class="screen active">
+    <p class="menu-title">Loop Practice</p>
+    <p class="menu-sub">Pilih topik yang ingin kamu latih</p>
+    <div class="menu-cards">
+      <div class="menu-card" onclick="startTopic('while')">
+        <div class="card-badge badge-while">While Loop</div>
+        <div class="card-title">while loop</div>
+        <div class="card-desc">Ulangi kode selama kondisi bernilai true</div>
+        <div class="card-levels">4 level</div>
+      </div>
+      <div class="menu-card" onclick="startTopic('dowhile')">
+        <div class="card-badge badge-dowhile">Do While</div>
+        <div class="card-title">do...while loop</div>
+        <div class="card-desc">Jalankan dulu, baru cek kondisinya</div>
+        <div class="card-levels">4 level</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-level" class="screen">
+    <div class="level-header">
+      <button class="back-btn" onclick="goMenu()"><i class="ti ti-arrow-left" aria-hidden="true"></i> Menu</button>
+      <div class="level-info">
+        <div class="level-title" id="lv-title"></div>
+        <div class="level-sub" id="lv-sub"></div>
+        <div class="progress-bar"><div class="progress-fill" id="lv-progress"></div></div>
+      </div>
+    </div>
+    <div class="question-card">
+      <div class="q-label" id="q-label"></div>
+      <div class="q-story" id="q-story"></div>
+      <div class="q-output-label">Output yang diharapkan:</div>
+      <div class="q-output" id="q-output"></div>
+    </div>
+    <div class="code-area">
+      <div class="code-area-header">
+        <i class="ti ti-code" aria-hidden="true" style="font-size:16px; color:var(--color-text-secondary)"></i>
+        <span class="code-area-title">Lengkapi kode di bawah ini</span>
+      </div>
+      <div class="blanks-container" id="blanks-container"></div>
+    </div>
+    <div class="feedback" id="feedback"><i class="ti ti-circle-check" id="fb-icon" style="font-size:18px; flex-shrink:0; margin-top:1px"></i><span id="fb-text"></span></div>
+    <div class="action-row">
+      <button class="run-btn primary" onclick="checkAnswer()" id="check-btn"><i class="ti ti-player-play" aria-hidden="true"></i> Cek Jawaban</button>
+      <button class="run-btn" onclick="showHint()" id="hint-btn"><i class="ti ti-bulb" aria-hidden="true"></i> Hint</button>
+      <button class="run-btn success-btn" onclick="nextLevel()" id="next-btn" style="display:none"><i class="ti ti-arrow-right" aria-hidden="true"></i> Level Berikutnya</button>
+    </div>
+  </div>
+
+  <div id="screen-complete" class="screen complete-screen">
+    <div class="complete-icon"><i class="ti ti-trophy"></i></div>
+    <div class="stars" id="complete-stars">★★★★</div>
+    <div class="complete-title" id="complete-title">Selesai!</div>
+    <div class="complete-sub" id="complete-sub"></div>
+    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+      <button class="run-btn primary" onclick="replayTopic()" id="replay-btn">Ulangi lagi</button>
+      <button class="run-btn" onclick="goMenu()">Pilih topik lain</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOPICS = {
+  while: {
+    title: 'while loop',
+    color: 'fill-blue',
+    levels: [
+      {
+        label: 'Level 1 — Struktur dasar',
+        story: 'Kamu ingin mencetak angka 1 sampai 3 menggunakan while loop. Lengkapi kodenya!',
+        output: '1\n2\n3',
+        template: [
+          { type:'code', text:'let i = 1;' },
+          { type:'blank-line', before:'', blank:'while', after:' (i <= 3) {' },
+          { type:'code', text:'  console.log(i);' },
+          { type:'blank-line', before:'  i', blank:'++', after:';' },
+          { type:'code', text:'}' },
+        ],
+        answers: ['while', '++'],
+        hint: 'Kata kunci loop-nya adalah "while". Untuk menambah i, gunakan "++".'
+      },
+      {
+        label: 'Level 2 — Kondisi loop',
+        story: 'Hitung mundur dari 5 sampai 1. Tuliskan kondisinya dengan benar!',
+        output: '5\n4\n3\n2\n1',
+        template: [
+          { type:'code', text:'let i = 5;' },
+          { type:'blank-line', before:'while (i ', blank:'>=', after:' 1) {' },
+          { type:'code', text:'  console.log(i);' },
+          { type:'blank-line', before:'  i', blank:'--', after:';' },
+          { type:'code', text:'}' },
+        ],
+        answers: ['>=', '--'],
+        hint: 'Kondisinya: i harus lebih besar atau sama dengan 1. Untuk kurangi i, gunakan "--".'
+      },
+      {
+        label: 'Level 3 — Kondisi dengan string',
+        story: 'Cetak kata "Halo" sebanyak 3 kali. Variabel penghitung dimulai dari 0.',
+        output: 'Halo\nHalo\nHalo',
+        template: [
+          { type:'code', text:'let i = 0;' },
+          { type:'blank-line', before:'while (i ', blank:'<', after:' 3) {' },
+          { type:'code', text:'  console.log("Halo");' },
+          { type:'blank-line', before:'  i', blank:'++', after:';' },
+          { type:'code', text:'}' },
+        ],
+        answers: ['<', '++'],
+        hint: 'Jika mulai dari 0 dan ingin 3 kali, kondisinya i < 3. Jangan lupa i++ agar tidak infinite loop!'
+      },
+      {
+        label: 'Level 4 — Akumulasi nilai',
+        story: 'Jumlahkan angka 1 sampai 4 menggunakan while loop. Inisialisasi sum dengan nilai awal yang benar.',
+        output: 'Total: 10',
+        template: [
+          { type:'blank-line', before:'let sum = ', blank:'0', after:';' },
+          { type:'code', text:'let i = 1;' },
+          { type:'code', text:'while (i <= 4) {' },
+          { type:'blank-line', before:'  sum += ', blank:'i', after:';' },
+          { type:'code', text:'  i++;' },
+          { type:'code', text:'}' },
+          { type:'code', text:'console.log("Total: " + sum);' },
+        ],
+        answers: ['0', 'i'],
+        hint: 'sum dimulai dari 0 (tidak ada nilai awal). Di dalam loop, tambahkan i ke sum.'
+      }
+    ]
+  },
+  dowhile: {
+    title: 'do...while loop',
+    color: 'fill-green',
+    levels: [
+      {
+        label: 'Level 1 — Struktur dasar',
+        story: 'Gunakan do...while untuk mencetak angka 1, 2, 3. Lengkapi struktur loop-nya!',
+        output: '1\n2\n3',
+        template: [
+          { type:'code', text:'let i = 1;' },
+          { type:'blank-line', before:'', blank:'do', after:' {' },
+          { type:'code', text:'  console.log(i);' },
+          { type:'code', text:'  i++;' },
+          { type:'blank-line', before:'} ', blank:'while', after:' (i <= 3);' },
+        ],
+        answers: ['do', 'while'],
+        hint: 'Struktur do...while: kata "do" di awal, kata "while" di akhir setelah tanda kurung kurawal tutup.'
+      },
+      {
+        label: 'Level 2 — Kondisi di akhir',
+        story: 'Bedanya do...while: blok kode dijalankan MINIMAL 1 kali. Cetak "Selamat datang!" lalu cek kondisi.',
+        output: 'Selamat datang!\nSelamat datang!\nSelamat datang!',
+        template: [
+          { type:'code', text:'let i = 0;' },
+          { type:'code', text:'do {' },
+          { type:'code', text:'  console.log("Selamat datang!");' },
+          { type:'blank-line', before:'  i', blank:'++', after:';' },
+          { type:'blank-line', before:'} while (i ', blank:'<', after:' 3);' },
+        ],
+        answers: ['++', '<'],
+        hint: 'Gunakan i++ untuk menambah penghitung. Kondisi: i < 3 agar mencetak tepat 3 kali.'
+      },
+      {
+        label: 'Level 3 — Selalu jalan sekali',
+        story: 'Kondisi bernilai false dari awal, tapi do...while tetap jalan 1 kali. Berapa kali "Halo" tercetak?',
+        output: 'Halo',
+        template: [
+          { type:'code', text:'let i = 10;' },
+          { type:'code', text:'do {' },
+          { type:'code', text:'  console.log("Halo");' },
+          { type:'blank-line', before:'} while (i ', blank:'<', after:' 5);' },
+        ],
+        answers: ['<'],
+        hint: 'i = 10, kondisi while (i < 5) → langsung false. Tapi do...while tetap jalan 1 kali lebih dulu!'
+      },
+      {
+        label: 'Level 4 — Gabungkan semuanya',
+        story: 'Cetak "Kamar " + nomor untuk kamar 101, 102, dan 103 menggunakan do...while.',
+        output: 'Kamar 101\nKamar 102\nKamar 103',
+        template: [
+          { type:'blank-line', before:'let nomor = ', blank:'101', after:';' },
+          { type:'code', text:'do {' },
+          { type:'blank-line', before:'  console.log("Kamar " + ', blank:'nomor', after:');' },
+          { type:'code', text:'  nomor++;' },
+          { type:'code', text:'} while (nomor <= 103);' },
+        ],
+        answers: ['101', 'nomor'],
+        hint: 'Mulai dari nomor kamar 101. Di dalam loop, cetak "Kamar " + variabel nomor.'
+      }
+    ]
+  }
+};
+
+let currentTopic = null;
+let currentLevel = 0;
+let wrongAttempts = 0;
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+function goMenu() { show('menu'); }
+
+function startTopic(topic) {
+  currentTopic = topic;
+  currentLevel = 0;
+  loadLevel();
+  show('level');
+}
+
+function replayTopic() {
+  currentLevel = 0;
+  loadLevel();
+  show('level');
+}
+
+function loadLevel() {
+  const t = TOPICS[currentTopic];
+  const lv = t.levels[currentLevel];
+  wrongAttempts = 0;
+
+  document.getElementById('lv-title').textContent = t.title;
+  document.getElementById('lv-sub').textContent = lv.label;
+  
+  const prog = document.getElementById('lv-progress');
+  prog.className = 'progress-fill ' + t.color;
+  prog.style.width = ((currentLevel) / t.levels.length * 100) + '%';
+
+  document.getElementById('q-label').textContent = lv.label;
+  document.getElementById('q-story').textContent = lv.story;
+  document.getElementById('q-output').textContent = lv.output;
+
+  const container = document.getElementById('blanks-container');
+  container.innerHTML = '';
+  let blankIdx = 0;
+
+  lv.template.forEach(line => {
+    const span = document.createElement('span');
+    span.className = 'code-line';
+    if (line.type === 'code') {
+      span.textContent = line.text;
+    } else {
+      span.appendChild(document.createTextNode(line.before));
+      const inp = document.createElement('input');
+      inp.className = 'blank-input';
+      inp.type = 'text';
+      inp.autocomplete = 'off';
+      inp.spellcheck = false;
+      inp.dataset.idx = blankIdx++;
+      inp.style.width = Math.max(60, (lv.answers[inp.dataset.idx] || '').length * 11 + 24) + 'px';
+      inp.addEventListener('input', () => { inp.classList.remove('correct','wrong'); });
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') checkAnswer(); });
+      span.appendChild(inp);
+      span.appendChild(document.createTextNode(line.after));
+    }
+    container.appendChild(span);
+  });
+
+  hideFeedback();
+  document.getElementById('check-btn').style.display = '';
+  document.getElementById('hint-btn').style.display = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function checkAnswer() {
+  const lv = TOPICS[currentTopic].levels[currentLevel];
+  const inputs = document.querySelectorAll('.blank-input');
+  let allCorrect = true;
+
+  inputs.forEach(inp => {
+    const idx = parseInt(inp.dataset.idx);
+    const correct = lv.answers[idx];
+    if (inp.value.trim() === correct) {
+      inp.classList.add('correct');
+      inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong');
+      inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+
+  if (allCorrect) {
+    showFeedback('ok', '<strong>Benar!</strong> Kode kamu sudah tepat.');
+    document.getElementById('next-btn').style.display = '';
+    document.getElementById('check-btn').style.display = 'none';
+    document.getElementById('hint-btn').style.display = 'none';
+  } else {
+    wrongAttempts++;
+    showFeedback('err', 'Ada yang salah. Coba lagi! Perhatikan kotak merah.');
+  }
+}
+
+function showHint() {
+  const lv = TOPICS[currentTopic].levels[currentLevel];
+  showFeedback('hint', '<strong>Hint:</strong> ' + lv.hint);
+}
+
+function showFeedback(type, msg) {
+  const fb = document.getElementById('feedback');
+  const icon = document.getElementById('fb-icon');
+  fb.className = 'feedback show ' + type;
+  if (type === 'ok') icon.className = 'ti ti-circle-check';
+  else if (type === 'err') icon.className = 'ti ti-circle-x';
+  else icon.className = 'ti ti-bulb';
+  document.getElementById('fb-text').innerHTML = msg;
+}
+
+function hideFeedback() {
+  document.getElementById('feedback').className = 'feedback';
+}
+
+function nextLevel() {
+  const t = TOPICS[currentTopic];
+  currentLevel++;
+  if (currentLevel >= t.levels.length) {
+    showComplete();
+  } else {
+    loadLevel();
+  }
+}
+
+function showComplete() {
+  const t = TOPICS[currentTopic];
+  document.getElementById('complete-title').textContent = 'Selesai! ' + t.title;
+  document.getElementById('complete-sub').textContent = 'Kamu telah menyelesaikan semua level ' + t.title + '. Kerja bagus!';
+  const starsEl = document.getElementById('complete-stars');
+  starsEl.textContent = '★★★★';
+  starsEl.style.color = currentTopic === 'while' ? '#185FA5' : '#3B6D11';
+  document.getElementById('replay-btn').textContent = 'Ulangi ' + t.title;
+  
+  const prog = document.getElementById('lv-progress');
+  prog.style.width = '100%';
+  
+  show('complete');
+}
+</script>
