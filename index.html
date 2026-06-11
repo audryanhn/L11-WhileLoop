@@ -1,465 +1,1462 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loop Quest — While & Do While</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
 
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-sans); }
-#game { min-height: 500px; padding: 1.5rem 1rem; }
-.screen { display: none; }
-.screen.active { display: block; }
-
-.menu-title { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 0.5rem; text-align: center; }
-.menu-sub { font-size: 14px; color: var(--color-text-secondary); text-align: center; margin-bottom: 2rem; }
-.menu-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 480px; margin: 0 auto; }
-.menu-card {
-  background: var(--color-background-primary);
-  border: 0.5px solid var(--color-border-tertiary);
-  border-radius: var(--border-radius-lg);
-  padding: 1.25rem;
-  cursor: pointer;
-  transition: border-color 0.15s;
-  text-align: left;
-}
-.menu-card:hover { border-color: var(--color-border-primary); }
-.menu-card .card-icon { font-size: 20px; margin-bottom: 8px; color: var(--color-text-secondary); }
-.menu-card .card-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
-.menu-card .card-desc { font-size: 13px; color: var(--color-text-secondary); }
-.menu-card .card-levels { font-size: 12px; color: var(--color-text-tertiary); margin-top: 8px; }
-.card-badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); margin-bottom: 8px; }
-.badge-while { background: var(--color-background-info); color: var(--color-text-info); }
-.badge-dowhile { background: var(--color-background-success); color: var(--color-text-success); }
-
-.level-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
-.back-btn { background: none; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 6px 12px; cursor: pointer; font-size: 13px; color: var(--color-text-secondary); }
-.back-btn:hover { border-color: var(--color-border-primary); color: var(--color-text-primary); }
-.level-info { flex: 1; }
-.level-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
-.level-sub { font-size: 13px; color: var(--color-text-secondary); }
-.progress-bar { background: var(--color-background-secondary); border-radius: 99px; height: 6px; margin-top: 4px; }
-.progress-fill { height: 6px; border-radius: 99px; transition: width 0.3s; }
-.fill-blue { background: #378ADD; }
-.fill-green { background: #639922; }
-
-.question-card {
-  background: var(--color-background-primary);
-  border: 0.5px solid var(--color-border-tertiary);
-  border-radius: var(--border-radius-lg);
-  padding: 1.25rem;
-  margin-bottom: 12px;
-}
-.q-label { font-size: 12px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
-.q-story { font-size: 15px; color: var(--color-text-primary); margin-bottom: 1rem; line-height: 1.6; }
-.q-output-label { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 6px; }
-.q-output {
-  background: var(--color-background-tertiary);
-  border: 0.5px solid var(--color-border-tertiary);
-  border-radius: var(--border-radius-md);
-  padding: 10px 14px;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--color-text-primary);
-  white-space: pre;
-  margin-bottom: 1rem;
-}
-
-.code-area {
-  background: var(--color-background-primary);
-  border: 0.5px solid var(--color-border-tertiary);
-  border-radius: var(--border-radius-lg);
-  margin-bottom: 12px;
-  overflow: hidden;
-}
-.code-area-header { padding: 10px 14px; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; gap: 8px; }
-.code-area-title { font-size: 13px; color: var(--color-text-secondary); font-family: var(--font-mono); }
-.blanks-container { padding: 14px; font-family: var(--font-mono); font-size: 14px; color: var(--color-text-primary); line-height: 2.2; }
-.code-line { white-space: pre; display: block; }
-.blank-input {
-  display: inline-block;
-  background: var(--color-background-secondary);
-  border: 1.5px solid var(--color-border-secondary);
-  border-radius: var(--border-radius-md);
-  padding: 2px 8px;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--color-text-primary);
-  outline: none;
-  min-width: 60px;
-  width: auto;
-  vertical-align: middle;
-  transition: border-color 0.15s;
-}
-.blank-input:focus { border-color: #378ADD; }
-.blank-input.correct { border-color: #639922; background: var(--color-background-success); color: var(--color-text-success); }
-.blank-input.wrong { border-color: #E24B4A; background: var(--color-background-danger); color: var(--color-text-danger); animation: shake 0.3s; }
-@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
-
-.action-row { display: flex; gap: 10px; align-items: center; }
-.run-btn {
-  background: var(--color-background-primary);
-  border: 0.5px solid var(--color-border-secondary);
-  border-radius: var(--border-radius-md);
-  padding: 8px 20px;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--color-text-primary);
-  font-family: var(--font-sans);
-}
-.run-btn:hover { background: var(--color-background-secondary); }
-.run-btn.primary { background: #185FA5; color: #fff; border-color: #185FA5; }
-.run-btn.primary:hover { background: #0C447C; border-color: #0C447C; }
-.run-btn.success-btn { background: #3B6D11; color: #fff; border-color: #3B6D11; }
-
-.feedback {
-  border-radius: var(--border-radius-md);
-  padding: 10px 14px;
-  font-size: 14px;
-  margin-bottom: 12px;
-  display: none;
-}
-.feedback.show { display: flex; align-items: flex-start; gap: 8px; }
-.feedback.ok { background: var(--color-background-success); color: var(--color-text-success); border: 0.5px solid var(--color-border-success); }
-.feedback.err { background: var(--color-background-danger); color: var(--color-text-danger); border: 0.5px solid var(--color-border-danger); }
-.feedback.hint { background: var(--color-background-warning); color: var(--color-text-warning); border: 0.5px solid var(--color-border-warning); }
-
-.nav-row { display: flex; gap: 10px; justify-content: flex-end; }
-.complete-screen { text-align: center; padding: 2rem 1rem; }
-.complete-icon { font-size: 40px; color: #639922; margin-bottom: 1rem; }
-.complete-title { font-size: 22px; font-weight: 500; margin-bottom: 0.5rem; }
-.complete-sub { font-size: 15px; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
-.stars { font-size: 24px; letter-spacing: 4px; margin-bottom: 1.5rem; }
-</style>
-
-<div id="game">
-  <div id="screen-menu" class="screen active">
-    <p class="menu-title">Loop Practice</p>
-    <p class="menu-sub">Pilih topik yang ingin kamu latih</p>
-    <div class="menu-cards">
-      <div class="menu-card" onclick="startTopic('while')">
-        <div class="card-badge badge-while">While Loop</div>
-        <div class="card-title">while loop</div>
-        <div class="card-desc">Ulangi kode selama kondisi bernilai true</div>
-        <div class="card-levels">4 level</div>
-      </div>
-      <div class="menu-card" onclick="startTopic('dowhile')">
-        <div class="card-badge badge-dowhile">Do While</div>
-        <div class="card-title">do...while loop</div>
-        <div class="card-desc">Jalankan dulu, baru cek kondisinya</div>
-        <div class="card-levels">4 level</div>
-      </div>
-    </div>
-  </div>
-
-  <div id="screen-level" class="screen">
-    <div class="level-header">
-      <button class="back-btn" onclick="goMenu()"><i class="ti ti-arrow-left" aria-hidden="true"></i> Menu</button>
-      <div class="level-info">
-        <div class="level-title" id="lv-title"></div>
-        <div class="level-sub" id="lv-sub"></div>
-        <div class="progress-bar"><div class="progress-fill" id="lv-progress"></div></div>
-      </div>
-    </div>
-    <div class="question-card">
-      <div class="q-label" id="q-label"></div>
-      <div class="q-story" id="q-story"></div>
-      <div class="q-output-label">Output yang diharapkan:</div>
-      <div class="q-output" id="q-output"></div>
-    </div>
-    <div class="code-area">
-      <div class="code-area-header">
-        <i class="ti ti-code" aria-hidden="true" style="font-size:16px; color:var(--color-text-secondary)"></i>
-        <span class="code-area-title">Lengkapi kode di bawah ini</span>
-      </div>
-      <div class="blanks-container" id="blanks-container"></div>
-    </div>
-    <div class="feedback" id="feedback"><i class="ti ti-circle-check" id="fb-icon" style="font-size:18px; flex-shrink:0; margin-top:1px"></i><span id="fb-text"></span></div>
-    <div class="action-row">
-      <button class="run-btn primary" onclick="checkAnswer()" id="check-btn"><i class="ti ti-player-play" aria-hidden="true"></i> Cek Jawaban</button>
-      <button class="run-btn" onclick="showHint()" id="hint-btn"><i class="ti ti-bulb" aria-hidden="true"></i> Hint</button>
-      <button class="run-btn success-btn" onclick="nextLevel()" id="next-btn" style="display:none"><i class="ti ti-arrow-right" aria-hidden="true"></i> Level Berikutnya</button>
-    </div>
-  </div>
-
-  <div id="screen-complete" class="screen complete-screen">
-    <div class="complete-icon"><i class="ti ti-trophy"></i></div>
-    <div class="stars" id="complete-stars">★★★★</div>
-    <div class="complete-title" id="complete-title">Selesai!</div>
-    <div class="complete-sub" id="complete-sub"></div>
-    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-      <button class="run-btn primary" onclick="replayTopic()" id="replay-btn">Ulangi lagi</button>
-      <button class="run-btn" onclick="goMenu()">Pilih topik lain</button>
-    </div>
-  </div>
-</div>
-
-<script>
-const TOPICS = {
-  while: {
-    title: 'while loop',
-    color: 'fill-blue',
-    levels: [
-      {
-        label: 'Level 1 — Struktur dasar',
-        story: 'Kamu ingin mencetak angka 1 sampai 3 menggunakan while loop. Lengkapi kodenya!',
-        output: '1\n2\n3',
-        template: [
-          { type:'code', text:'let i = 1;' },
-          { type:'blank-line', before:'', blank:'while', after:' (i <= 3) {' },
-          { type:'code', text:'  console.log(i);' },
-          { type:'blank-line', before:'  i', blank:'++', after:';' },
-          { type:'code', text:'}' },
-        ],
-        answers: ['while', '++'],
-        hint: 'Kata kunci loop-nya adalah "while". Untuk menambah i, gunakan "++".'
-      },
-      {
-        label: 'Level 2 — Kondisi loop',
-        story: 'Hitung mundur dari 5 sampai 1. Tuliskan kondisinya dengan benar!',
-        output: '5\n4\n3\n2\n1',
-        template: [
-          { type:'code', text:'let i = 5;' },
-          { type:'blank-line', before:'while (i ', blank:'>=', after:' 1) {' },
-          { type:'code', text:'  console.log(i);' },
-          { type:'blank-line', before:'  i', blank:'--', after:';' },
-          { type:'code', text:'}' },
-        ],
-        answers: ['>=', '--'],
-        hint: 'Kondisinya: i harus lebih besar atau sama dengan 1. Untuk kurangi i, gunakan "--".'
-      },
-      {
-        label: 'Level 3 — Kondisi dengan string',
-        story: 'Cetak kata "Halo" sebanyak 3 kali. Variabel penghitung dimulai dari 0.',
-        output: 'Halo\nHalo\nHalo',
-        template: [
-          { type:'code', text:'let i = 0;' },
-          { type:'blank-line', before:'while (i ', blank:'<', after:' 3) {' },
-          { type:'code', text:'  console.log("Halo");' },
-          { type:'blank-line', before:'  i', blank:'++', after:';' },
-          { type:'code', text:'}' },
-        ],
-        answers: ['<', '++'],
-        hint: 'Jika mulai dari 0 dan ingin 3 kali, kondisinya i < 3. Jangan lupa i++ agar tidak infinite loop!'
-      },
-      {
-        label: 'Level 4 — Akumulasi nilai',
-        story: 'Jumlahkan angka 1 sampai 4 menggunakan while loop. Inisialisasi sum dengan nilai awal yang benar.',
-        output: 'Total: 10',
-        template: [
-          { type:'blank-line', before:'let sum = ', blank:'0', after:';' },
-          { type:'code', text:'let i = 1;' },
-          { type:'code', text:'while (i <= 4) {' },
-          { type:'blank-line', before:'  sum += ', blank:'i', after:';' },
-          { type:'code', text:'  i++;' },
-          { type:'code', text:'}' },
-          { type:'code', text:'console.log("Total: " + sum);' },
-        ],
-        answers: ['0', 'i'],
-        hint: 'sum dimulai dari 0 (tidak ada nilai awal). Di dalam loop, tambahkan i ke sum.'
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
-    ]
-  },
-  dowhile: {
-    title: 'do...while loop',
-    color: 'fill-green',
-    levels: [
-      {
-        label: 'Level 1 — Struktur dasar',
-        story: 'Gunakan do...while untuk mencetak angka 1, 2, 3. Lengkapi struktur loop-nya!',
-        output: '1\n2\n3',
-        template: [
-          { type:'code', text:'let i = 1;' },
-          { type:'blank-line', before:'', blank:'do', after:' {' },
-          { type:'code', text:'  console.log(i);' },
-          { type:'code', text:'  i++;' },
-          { type:'blank-line', before:'} ', blank:'while', after:' (i <= 3);' },
-        ],
-        answers: ['do', 'while'],
-        hint: 'Struktur do...while: kata "do" di awal, kata "while" di akhir setelah tanda kurung kurawal tutup.'
-      },
-      {
-        label: 'Level 2 — Kondisi di akhir',
-        story: 'Bedanya do...while: blok kode dijalankan MINIMAL 1 kali. Cetak "Selamat datang!" lalu cek kondisi.',
-        output: 'Selamat datang!\nSelamat datang!\nSelamat datang!',
-        template: [
-          { type:'code', text:'let i = 0;' },
-          { type:'code', text:'do {' },
-          { type:'code', text:'  console.log("Selamat datang!");' },
-          { type:'blank-line', before:'  i', blank:'++', after:';' },
-          { type:'blank-line', before:'} while (i ', blank:'<', after:' 3);' },
-        ],
-        answers: ['++', '<'],
-        hint: 'Gunakan i++ untuk menambah penghitung. Kondisi: i < 3 agar mencetak tepat 3 kali.'
-      },
-      {
-        label: 'Level 3 — Selalu jalan sekali',
-        story: 'Kondisi bernilai false dari awal, tapi do...while tetap jalan 1 kali. Berapa kali "Halo" tercetak?',
-        output: 'Halo',
-        template: [
-          { type:'code', text:'let i = 10;' },
-          { type:'code', text:'do {' },
-          { type:'code', text:'  console.log("Halo");' },
-          { type:'blank-line', before:'} while (i ', blank:'<', after:' 5);' },
-        ],
-        answers: ['<'],
-        hint: 'i = 10, kondisi while (i < 5) → langsung false. Tapi do...while tetap jalan 1 kali lebih dulu!'
-      },
-      {
-        label: 'Level 4 — Gabungkan semuanya',
-        story: 'Cetak "Kamar " + nomor untuk kamar 101, 102, dan 103 menggunakan do...while.',
-        output: 'Kamar 101\nKamar 102\nKamar 103',
-        template: [
-          { type:'blank-line', before:'let nomor = ', blank:'101', after:';' },
-          { type:'code', text:'do {' },
-          { type:'blank-line', before:'  console.log("Kamar " + ', blank:'nomor', after:');' },
-          { type:'code', text:'  nomor++;' },
-          { type:'code', text:'} while (nomor <= 103);' },
-        ],
-        answers: ['101', 'nomor'],
-        hint: 'Mulai dari nomor kamar 101. Di dalam loop, cetak "Kamar " + variabel nomor.'
+
+      :root {
+        --bg: #0f1117;
+        --bg2: #181b25;
+        --bg3: #1f2333;
+        --bg4: #252a3d;
+        --purple: #7c6af7;
+        --purple-dim: #4b44a0;
+        --purple-glow: #7c6af740;
+        --mint: #3ecfa4;
+        --mint-dim: #1a7a60;
+        --mint-glow: #3ecfa430;
+        --amber: #f5c842;
+        --amber-dim: #7a6010;
+        --red: #f26a6a;
+        --red-dim: #7a2020;
+        --text: #eef0f8;
+        --text2: #9096b4;
+        --text3: #5a607a;
+        --border: #2c3148;
+        --border2: #3c4260;
+        --radius: 12px;
+        --radius-sm: 8px;
+        --radius-lg: 18px;
       }
-    ]
-  }
-};
 
-let currentTopic = null;
-let currentLevel = 0;
-let wrongAttempts = 0;
+      html {
+        font-size: 16px;
+      }
 
-function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
-}
+      body {
+        font-family: "Nunito", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+        line-height: 1.6;
+      }
 
-function goMenu() { show('menu'); }
+      /* ─── BG DECORATION ─── */
+      body::before {
+        content: "";
+        position: fixed;
+        top: -200px;
+        left: -200px;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, #7c6af718 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 0;
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        bottom: -150px;
+        right: -150px;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, #3ecfa412 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 0;
+      }
 
-function startTopic(topic) {
-  currentTopic = topic;
-  currentLevel = 0;
-  loadLevel();
-  show('level');
-}
+      #app {
+        position: relative;
+        z-index: 1;
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 2rem 1.25rem 4rem;
+        min-height: 100vh;
+      }
 
-function replayTopic() {
-  currentLevel = 0;
-  loadLevel();
-  show('level');
-}
+      /* ─── SCREENS ─── */
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
 
-function loadLevel() {
-  const t = TOPICS[currentTopic];
-  const lv = t.levels[currentLevel];
-  wrongAttempts = 0;
+      /* ─── MENU ─── */
+      .brand {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        padding-top: 1.5rem;
+      }
+      .brand-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 64px;
+        height: 64px;
+        background: var(--bg3);
+        border: 1.5px solid var(--border2);
+        border-radius: 20px;
+        font-size: 28px;
+        margin-bottom: 1rem;
+      }
+      .brand h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        background: linear-gradient(135deg, #7c6af7, #3ecfa4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .brand p {
+        color: var(--text2);
+        font-size: 1rem;
+        margin-top: 0.25rem;
+      }
 
-  document.getElementById('lv-title').textContent = t.title;
-  document.getElementById('lv-sub').textContent = lv.label;
-  
-  const prog = document.getElementById('lv-progress');
-  prog.className = 'progress-fill ' + t.color;
-  prog.style.width = ((currentLevel) / t.levels.length * 100) + '%';
+      .topic-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 2rem;
+      }
 
-  document.getElementById('q-label').textContent = lv.label;
-  document.getElementById('q-story').textContent = lv.story;
-  document.getElementById('q-output').textContent = lv.output;
+      .topic-card {
+        background: var(--bg2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem 1.25rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+        text-align: left;
+      }
+      .topic-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .topic-card.purple::before {
+        background: radial-gradient(
+          circle at top left,
+          #7c6af712,
+          transparent 60%
+        );
+      }
+      .topic-card.mint::before {
+        background: radial-gradient(
+          circle at top left,
+          #3ecfa412,
+          transparent 60%
+        );
+      }
+      .topic-card:hover {
+        transform: translateY(-3px);
+      }
+      .topic-card.purple:hover {
+        border-color: var(--purple-dim);
+        box-shadow: 0 8px 30px #7c6af722;
+      }
+      .topic-card.mint:hover {
+        border-color: var(--mint-dim);
+        box-shadow: 0 8px 30px #3ecfa422;
+      }
+      .topic-card:hover::before {
+        opacity: 1;
+      }
 
-  const container = document.getElementById('blanks-container');
-  container.innerHTML = '';
-  let blankIdx = 0;
+      .topic-pill {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 99px;
+        margin-bottom: 0.85rem;
+      }
+      .topic-pill.purple {
+        background: #7c6af722;
+        color: #a89af8;
+        border: 1px solid #7c6af740;
+      }
+      .topic-pill.mint {
+        background: #3ecfa422;
+        color: #5edfc0;
+        border: 1px solid #3ecfa440;
+      }
 
-  lv.template.forEach(line => {
-    const span = document.createElement('span');
-    span.className = 'code-line';
-    if (line.type === 'code') {
-      span.textContent = line.text;
-    } else {
-      span.appendChild(document.createTextNode(line.before));
-      const inp = document.createElement('input');
-      inp.className = 'blank-input';
-      inp.type = 'text';
-      inp.autocomplete = 'off';
-      inp.spellcheck = false;
-      inp.dataset.idx = blankIdx++;
-      inp.style.width = Math.max(60, (lv.answers[inp.dataset.idx] || '').length * 11 + 24) + 'px';
-      inp.addEventListener('input', () => { inp.classList.remove('correct','wrong'); });
-      inp.addEventListener('keydown', e => { if (e.key === 'Enter') checkAnswer(); });
-      span.appendChild(inp);
-      span.appendChild(document.createTextNode(line.after));
-    }
-    container.appendChild(span);
-  });
+      .topic-card h2 {
+        font-size: 1.2rem;
+        font-weight: 800;
+        font-family: "Fira Code", monospace;
+        color: var(--text);
+        margin-bottom: 0.4rem;
+      }
+      .topic-card p {
+        font-size: 0.875rem;
+        color: var(--text2);
+        line-height: 1.5;
+      }
+      .topic-meta {
+        margin-top: 1rem;
+        font-size: 0.8rem;
+        color: var(--text3);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
 
-  hideFeedback();
-  document.getElementById('check-btn').style.display = '';
-  document.getElementById('hint-btn').style.display = '';
-  document.getElementById('next-btn').style.display = 'none';
-}
+      .info-bar {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem 1.25rem;
+        font-size: 0.875rem;
+        color: var(--text2);
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .info-bar span:first-child {
+        font-size: 1.1rem;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
 
-function checkAnswer() {
-  const lv = TOPICS[currentTopic].levels[currentLevel];
-  const inputs = document.querySelectorAll('.blank-input');
-  let allCorrect = true;
+      /* ─── LEVEL SCREEN ─── */
+      .level-topbar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 1.5rem;
+      }
+      .btn-back {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 7px 14px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-family: "Nunito", sans-serif;
+        font-weight: 600;
+        color: var(--text2);
+        transition: all 0.15s;
+      }
+      .btn-back:hover {
+        background: var(--bg4);
+        color: var(--text);
+        border-color: var(--border2);
+      }
 
-  inputs.forEach(inp => {
-    const idx = parseInt(inp.dataset.idx);
-    const correct = lv.answers[idx];
-    if (inp.value.trim() === correct) {
-      inp.classList.add('correct');
-      inp.classList.remove('wrong');
-    } else {
-      inp.classList.add('wrong');
-      inp.classList.remove('correct');
-      allCorrect = false;
-    }
-  });
+      .topbar-info {
+        flex: 1;
+      }
+      .topbar-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text2);
+      }
+      .topbar-level {
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--text);
+      }
 
-  if (allCorrect) {
-    showFeedback('ok', '<strong>Benar!</strong> Kode kamu sudah tepat.');
-    document.getElementById('next-btn').style.display = '';
-    document.getElementById('check-btn').style.display = 'none';
-    document.getElementById('hint-btn').style.display = 'none';
-  } else {
-    wrongAttempts++;
-    showFeedback('err', 'Ada yang salah. Coba lagi! Perhatikan kotak merah.');
-  }
-}
+      .progress-dots {
+        display: flex;
+        gap: 7px;
+        align-items: center;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--border2);
+        transition: all 0.3s ease;
+        border: 1.5px solid transparent;
+      }
+      .dot.done-purple {
+        background: var(--purple);
+        box-shadow: 0 0 8px var(--purple-glow);
+      }
+      .dot.done-mint {
+        background: var(--mint);
+        box-shadow: 0 0 8px var(--mint-glow);
+      }
+      .dot.active-purple {
+        background: transparent;
+        border-color: var(--purple);
+        box-shadow: 0 0 6px var(--purple-glow);
+      }
+      .dot.active-mint {
+        background: transparent;
+        border-color: var(--mint);
+        box-shadow: 0 0 6px var(--mint-glow);
+      }
 
-function showHint() {
-  const lv = TOPICS[currentTopic].levels[currentLevel];
-  showFeedback('hint', '<strong>Hint:</strong> ' + lv.hint);
-}
+      /* ─── QUESTION CARD ─── */
+      .question-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        margin-bottom: 14px;
+      }
 
-function showFeedback(type, msg) {
-  const fb = document.getElementById('feedback');
-  const icon = document.getElementById('fb-icon');
-  fb.className = 'feedback show ' + type;
-  if (type === 'ok') icon.className = 'ti ti-circle-check';
-  else if (type === 'err') icon.className = 'ti ti-circle-x';
-  else icon.className = 'ti ti-bulb';
-  document.getElementById('fb-text').innerHTML = msg;
-}
+      .q-eyebrow {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin-bottom: 0.6rem;
+      }
+      .q-story {
+        font-size: 1rem;
+        color: var(--text);
+        line-height: 1.65;
+        margin-bottom: 1.25rem;
+        font-weight: 500;
+      }
 
-function hideFeedback() {
-  document.getElementById('feedback').className = 'feedback';
-}
+      .output-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .output-label::before {
+        content: "";
+        display: inline-block;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: var(--text3);
+      }
 
-function nextLevel() {
-  const t = TOPICS[currentTopic];
-  currentLevel++;
-  if (currentLevel >= t.levels.length) {
-    showComplete();
-  } else {
-    loadLevel();
-  }
-}
+      .output-box {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 12px 16px;
+        font-family: "Fira Code", monospace;
+        font-size: 0.875rem;
+        color: var(--mint);
+        white-space: pre;
+        line-height: 1.8;
+      }
 
-function showComplete() {
-  const t = TOPICS[currentTopic];
-  document.getElementById('complete-title').textContent = 'Selesai! ' + t.title;
-  document.getElementById('complete-sub').textContent = 'Kamu telah menyelesaikan semua level ' + t.title + '. Kerja bagus!';
-  const starsEl = document.getElementById('complete-stars');
-  starsEl.textContent = '★★★★';
-  starsEl.style.color = currentTopic === 'while' ? '#185FA5' : '#3B6D11';
-  document.getElementById('replay-btn').textContent = 'Ulangi ' + t.title;
-  
-  const prog = document.getElementById('lv-progress');
-  prog.style.width = '100%';
-  
-  show('complete');
-}
-</script>
+      /* ─── CODE EDITOR ─── */
+      .code-editor {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        margin-bottom: 14px;
+      }
+
+      .editor-header {
+        background: var(--bg2);
+        border-bottom: 1px solid var(--border);
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .editor-dots {
+        display: flex;
+        gap: 6px;
+      }
+      .editor-dots span {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: var(--border2);
+      }
+      .editor-dots span:nth-child(1) {
+        background: #f26a6a44;
+      }
+      .editor-dots span:nth-child(2) {
+        background: #f5c84244;
+      }
+      .editor-dots span:nth-child(3) {
+        background: #3ecfa444;
+      }
+
+      .editor-filename {
+        font-size: 0.8rem;
+        font-family: "Fira Code", monospace;
+        color: var(--text3);
+        flex: 1;
+      }
+
+      .editor-body {
+        padding: 1.25rem 0;
+      }
+
+      .code-line {
+        display: flex;
+        align-items: center;
+        padding: 3px 0;
+        font-family: "Fira Code", monospace;
+        font-size: 0.9rem;
+        color: var(--text);
+        line-height: 2;
+      }
+      .line-num {
+        width: 40px;
+        text-align: right;
+        padding-right: 14px;
+        color: var(--text3);
+        font-size: 0.8rem;
+        user-select: none;
+        flex-shrink: 0;
+      }
+      .line-content {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1px;
+        padding-right: 1rem;
+      }
+      .kw {
+        color: #a89af8;
+      }
+      .str {
+        color: #f5c842;
+      }
+      .num {
+        color: #3ecfa4;
+      }
+      .op {
+        color: #f26a6a;
+      }
+      .fn {
+        color: #7dc6f5;
+      }
+      .cm {
+        color: var(--text3);
+        font-style: italic;
+      }
+      .plain {
+        color: var(--text);
+      }
+
+      .blank-wrap {
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+      }
+      .blank-input {
+        font-family: "Fira Code", monospace;
+        font-size: 0.9rem;
+        font-weight: 500;
+        background: var(--bg3);
+        border: 1.5px solid var(--border2);
+        border-radius: 6px;
+        padding: 0 10px;
+        height: 30px;
+        color: var(--text);
+        outline: none;
+        transition: all 0.2s ease;
+        min-width: 60px;
+        text-align: center;
+      }
+      .blank-input::placeholder {
+        color: var(--text3);
+      }
+      .blank-input:focus {
+        border-color: var(--purple);
+        box-shadow: 0 0 0 3px var(--purple-glow);
+        background: var(--bg4);
+      }
+      .blank-input.correct {
+        border-color: var(--mint);
+        background: #3ecfa412;
+        color: var(--mint);
+        box-shadow: 0 0 0 3px var(--mint-glow);
+      }
+      .blank-input.wrong {
+        border-color: var(--red);
+        background: #f26a6a12;
+        color: var(--red);
+        box-shadow: 0 0 0 3px #f26a6a30;
+        animation: shake 0.35s ease;
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-6px);
+        }
+        60% {
+          transform: translateX(6px);
+        }
+      }
+
+      /* ─── FEEDBACK ─── */
+      .feedback {
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: none;
+        gap: 10px;
+        align-items: flex-start;
+        margin-bottom: 14px;
+      }
+      .feedback.show {
+        display: flex;
+        animation: feedIn 0.2s ease;
+      }
+      @keyframes feedIn {
+        from {
+          opacity: 0;
+          transform: translateY(-4px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .feedback.ok {
+        background: #3ecfa415;
+        border: 1px solid #3ecfa440;
+        color: #5edfc0;
+      }
+      .feedback.err {
+        background: #f26a6a15;
+        border: 1px solid #f26a6a40;
+        color: #f5a0a0;
+      }
+      .feedback.hint {
+        background: #f5c84215;
+        border: 1px solid #f5c84240;
+        color: #f5d878;
+      }
+      .feedback-icon {
+        font-size: 1.1rem;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .feedback-text {
+        line-height: 1.5;
+      }
+
+      /* ─── ACTION ROW ─── */
+      .action-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        font-family: "Nunito", sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        border-radius: var(--radius-sm);
+        padding: 10px 20px;
+        cursor: pointer;
+        border: none;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .btn:active {
+        transform: scale(0.97);
+      }
+
+      .btn-primary {
+        background: var(--purple);
+        color: #fff;
+        box-shadow: 0 4px 14px #7c6af740;
+      }
+      .btn-primary:hover {
+        background: #8e80f8;
+        box-shadow: 0 4px 20px #7c6af760;
+      }
+
+      .btn-primary.mint-theme {
+        background: var(--mint);
+        color: #0a2e24;
+        box-shadow: 0 4px 14px #3ecfa440;
+      }
+      .btn-primary.mint-theme:hover {
+        background: #52e0b5;
+        box-shadow: 0 4px 20px #3ecfa460;
+      }
+
+      .btn-ghost {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        color: var(--text2);
+      }
+      .btn-ghost:hover {
+        background: var(--bg4);
+        color: var(--text);
+        border-color: var(--border2);
+      }
+
+      .btn-next {
+        background: var(--mint);
+        color: #0a2e24;
+        font-weight: 800;
+        box-shadow: 0 4px 14px #3ecfa440;
+        display: none;
+      }
+      .btn-next:hover {
+        background: #52e0b5;
+      }
+      .btn-next.show {
+        display: inline-flex;
+      }
+
+      /* ─── COMPLETE SCREEN ─── */
+      .complete-wrap {
+        text-align: center;
+        padding: 3rem 1.5rem;
+      }
+      .complete-trophy {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        display: block;
+        animation: bounce 0.6s ease;
+      }
+      @keyframes bounce {
+        0% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        70% {
+          transform: scale(1.15);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .complete-stars {
+        font-size: 2rem;
+        letter-spacing: 6px;
+        margin-bottom: 1rem;
+        animation: fadeIn 0.5s 0.2s both ease;
+      }
+      .complete-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        animation: fadeIn 0.5s 0.3s both ease;
+      }
+      .complete-sub {
+        font-size: 1rem;
+        color: var(--text2);
+        margin-bottom: 2rem;
+        animation: fadeIn 0.5s 0.4s both ease;
+      }
+      .complete-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: fadeIn 0.5s 0.5s both ease;
+      }
+
+      /* ─── SYNTAX HIGHLIGHT HELPERS ─── */
+      .s-kw {
+        color: #a89af8;
+      }
+      .s-var {
+        color: #eef0f8;
+      }
+      .s-num {
+        color: #3ecfa4;
+      }
+      .s-str {
+        color: #f5c842;
+      }
+      .s-op {
+        color: #f26a6a;
+      }
+      .s-fn {
+        color: #7dc6f5;
+      }
+      .s-punct {
+        color: #5a607a;
+      }
+
+      /* ─── RESPONSIVE ─── */
+      @media (max-width: 500px) {
+        .topic-grid {
+          grid-template-columns: 1fr;
+        }
+        .action-row {
+          flex-direction: column;
+        }
+        .action-row .btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .brand h1 {
+          font-size: 1.6rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- ══ MENU ══ -->
+      <div id="screen-menu" class="screen active">
+        <div class="brand">
+          <div class="brand-icon">🔁</div>
+          <h1>Loop Quest</h1>
+          <p>Latihan while &amp; do while loop — isi kotak kosongnya!</p>
+        </div>
+
+        <div class="topic-grid">
+          <div class="topic-card purple" onclick="startTopic('while')">
+            <div class="topic-pill purple">while loop</div>
+            <h2>while</h2>
+            <p>Ulangi kode selama kondisi bernilai <em>true</em></p>
+            <div class="topic-meta"><span>🎮</span> 4 level</div>
+          </div>
+          <div class="topic-card mint" onclick="startTopic('dowhile')">
+            <div class="topic-pill mint">do while</div>
+            <h2>do…while</h2>
+            <p>Jalankan dulu, baru cek kondisinya</p>
+            <div class="topic-meta"><span>🎮</span> 4 level</div>
+          </div>
+        </div>
+
+        <div class="info-bar">
+          <span>💡</span>
+          <span
+            >Isi kotak <strong style="color: var(--purple)">___</strong> yang
+            kosong di dalam kode, lalu klik <strong>Cek Jawaban</strong>. Tekan
+            <strong>Hint</strong> kalau butuh petunjuk!</span
+          >
+        </div>
+      </div>
+
+      <!-- ══ LEVEL SCREEN ══ -->
+      <div id="screen-level" class="screen">
+        <div class="level-topbar">
+          <button class="btn-back" onclick="goMenu()">← Menu</button>
+          <div class="topbar-info">
+            <div class="topbar-title" id="tb-topic"></div>
+            <div class="topbar-level" id="tb-level"></div>
+          </div>
+          <div class="progress-dots" id="progress-dots"></div>
+        </div>
+
+        <div class="question-card">
+          <div class="q-eyebrow" id="q-eyebrow"></div>
+          <div class="q-story" id="q-story"></div>
+          <div class="output-label">Output yang diharapkan</div>
+          <div class="output-box" id="q-output"></div>
+        </div>
+
+        <div class="code-editor">
+          <div class="editor-header">
+            <div class="editor-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="editor-filename">script.js</div>
+          </div>
+          <div class="editor-body" id="editor-body"></div>
+        </div>
+
+        <div class="feedback" id="feedback">
+          <span class="feedback-icon" id="fb-icon"></span>
+          <span class="feedback-text" id="fb-text"></span>
+        </div>
+
+        <div class="action-row">
+          <button
+            class="btn btn-primary"
+            id="btn-check"
+            onclick="checkAnswer()"
+          >
+            ▶ Cek Jawaban
+          </button>
+          <button class="btn btn-ghost" id="btn-hint" onclick="showHint()">
+            💡 Hint
+          </button>
+          <button class="btn btn-next" id="btn-next" onclick="nextLevel()">
+            Level Berikutnya →
+          </button>
+        </div>
+      </div>
+
+      <!-- ══ COMPLETE SCREEN ══ -->
+      <div id="screen-complete" class="screen">
+        <div class="complete-wrap">
+          <span class="complete-trophy">🏆</span>
+          <div class="complete-stars" id="c-stars">⭐⭐⭐⭐</div>
+          <div class="complete-title" id="c-title">Selesai!</div>
+          <div class="complete-sub" id="c-sub">Kerja bagus!</div>
+          <div class="complete-actions">
+            <button
+              class="btn btn-primary"
+              id="btn-replay"
+              onclick="replayTopic()"
+            >
+              🔁 Ulangi Lagi
+            </button>
+            <button class="btn btn-ghost" onclick="goMenu()">
+              ← Pilih Topik Lain
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* ═══════════════════════════════════════
+   DATA — LEVEL DEFINITIONS
+═══════════════════════════════════════ */
+      const TOPICS = {
+        while: {
+          name: "while loop",
+          accent: "purple",
+          levels: [
+            {
+              eyebrow: "Level 1 — Struktur dasar",
+              story:
+                "Kamu ingin mencetak angka 1 sampai 3 menggunakan while loop. Lengkapi kata kunci dan operatornya!",
+              output: "1\n2\n3",
+              lines: [
+                {
+                  code: [
+                    ["s-kw", "let"],
+                    ["s-var", " i "],
+                    ["s-op", "="],
+                    ["s-num", " 1"],
+                    ["s-punct", ";;"],
+                  ],
+                },
+                {
+                  code: [
+                    ["blank", "while"],
+                    ["s-punct", " (i "],
+                    ["s-op", "<="],
+                    ["s-num", " 3"],
+                    ["s-punct", ") {"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-fn", "  console"],
+                    ["s-punct", "."],
+                    ["s-fn", "log"],
+                    ["s-punct", "(i);"],
+                  ],
+                  indent: 2,
+                },
+                {
+                  code: [
+                    ["s-var", "  i"],
+                    ["blank", "++"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                { code: [["s-punct", "}"]] },
+              ],
+              answers: ["while", "++"],
+              hint: 'Kata kunci loopnya "while". Untuk tambah i, tulis "++" setelah variabelnya.',
+            },
+            {
+              eyebrow: "Level 2 — Kondisi loop",
+              story:
+                "Hitung mundur dari 5 sampai 1. Tentukan operator kondisi dan cara mengurangi i!",
+              output: "5\n4\n3\n2\n1",
+              lines: [
+                {
+                  code: [
+                    ["s-kw", "let"],
+                    ["s-var", " i "],
+                    ["s-op", "="],
+                    ["s-num", " 5"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-kw", "while"],
+                    ["s-punct", " (i "],
+                    ["blank", ">="],
+                    ["s-num", " 1"],
+                    ["s-punct", ") {"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-fn", "  console"],
+                    ["s-punct", "."],
+                    ["s-fn", "log"],
+                    ["s-punct", "(i);"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-var", "  i"],
+                    ["blank", "--"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                { code: [["s-punct", "}"]] },
+              ],
+              answers: [">=", "--"],
+              hint: 'i mulai dari 5, harus berjalan selama i >= 1. Untuk kurangi i, gunakan "--".',
+            },
+            {
+              eyebrow: "Level 3 — Menghitung pengulangan",
+              story:
+                'Cetak "Halo!" sebanyak 3 kali. Variabel penghitung dimulai dari 0, tentukan kondisi yang tepat!',
+              output: "Halo!\nHalo!\nHalo!",
+              lines: [
+                {
+                  code: [
+                    ["s-kw", "let"],
+                    ["s-var", " i "],
+                    ["s-op", "="],
+                    ["s-num", " 0"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-kw", "while"],
+                    ["s-punct", " (i "],
+                    ["blank", "<"],
+                    ["s-num", " 3"],
+                    ["s-punct", ") {"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-fn", "  console"],
+                    ["s-punct", "."],
+                    ["s-fn", "log"],
+                    ["s-punct", "("],
+                    ["s-str", '"Halo!"'],
+                    ["s-punct", ");"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-var", "  i"],
+                    ["blank", "++"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                { code: [["s-punct", "}"]] },
+              ],
+              answers: ["<", "++"],
+              hint: "Mulai dari 0, ingin 3 kali → kondisinya i < 3. Jangan lupa i++ biar tidak infinite loop!",
+            },
+            {
+              eyebrow: "Level 4 — Akumulasi nilai",
+              story:
+                "Jumlahkan angka 1 sampai 4 dengan while loop. Isi nilai awal sum dan nama variabel yang ditambahkan!",
+              output: "Total: 10",
+              lines: [
+                {
+                  code: [
+                    ["s-kw", "let"],
+                    ["s-var", " sum "],
+                    ["s-op", "="],
+                    ["blank", "0"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-kw", "let"],
+                    ["s-var", " i "],
+                    ["s-op", "="],
+                    ["s-num", " 1"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-kw", "while"],
+                    ["s-punct", " (i "],
+                    ["s-op", "<="],
+                    ["s-num", " 4"],
+                    ["s-punct", ") {"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-var", "  sum "],
+                    ["s-op", "+="],
+                    ["s-punct", " "],
+                    ["blank", "i"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-var", "  i"],
+                    ["s-op", "++"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                { code: [["s-punct", "}"]] },
+                {
+                  code: [
+                    ["s-fn", "console"],
+                    ["s-punct", "."],
+                    ["s-fn", "log"],
+                    ["s-punct", "("],
+                    ["s-str", '"Total: "'],
+                    ["s-punct", " + sum);"],
+                  ],
+                },
+              ],
+              answers: ["0", "i"],
+              hint: 'sum dimulai dari 0 (belum ada nilai). Di dalam loop, tambahkan nilai i ke sum dengan "+= i".',
+            },
+          ],
+        },
+
+        dowhile: {
+          name: "do…while loop",
+          accent: "mint",
+          levels: [
+            {
+              eyebrow: "Level 1 — Struktur dasar",
+              story:
+                "Gunakan do...while untuk mencetak angka 1 sampai 3. Lengkapi kedua kata kunci strukturnya!",
+              output: "1\n2\n3",
+              lines: [
+                {
+                  code: [
+                    ["s-kw", "let"],
+                    ["s-var", " i "],
+                    ["s-op", "="],
+                    ["s-num", " 1"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                {
+                  code: [
+                    ["blank", "do"],
+                    ["s-punct", " {"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-fn", "  console"],
+                    ["s-punct", "."],
+                    ["s-fn", "log"],
+                    ["s-punct", "(i);"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-var", "  i"],
+                    ["s-op", "++"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-punct", "} "],
+                    ["blank", "while"],
+                    ["s-punct", " (i <= 3);"],
+                  ],
+                },
+              ],
+              answers: ["do", "while"],
+              hint: 'Struktur do...while: kata "do" di awal blok, kata "while" di akhir setelah tanda "}".',
+            },
+            {
+              eyebrow: "Level 2 — Kondisi di akhir",
+              story:
+                'Cetak "Selamat datang!" 3 kali. Isi cara menambah i dan kondisi berhentinya!',
+              output: "Selamat datang!\nSelamat datang!\nSelamat datang!",
+              lines: [
+                {
+                  code: [
+                    ["s-kw", "let"],
+                    ["s-var", " i "],
+                    ["s-op", "="],
+                    ["s-num", " 0"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-kw", "do"],
+                    ["s-punct", " {"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-fn", "  console"],
+                    ["s-punct", "."],
+                    ["s-fn", "log"],
+                    ["s-punct", "("],
+                    ["s-str", '"Selamat datang!"'],
+                    ["s-punct", ");"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-var", "  i"],
+                    ["blank", "++"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-punct", "} "],
+                    ["s-kw", "while"],
+                    ["s-punct", " (i "],
+                    ["blank", "<"],
+                    ["s-num", " 3"],
+                    ["s-punct", ");"],
+                  ],
+                },
+              ],
+              answers: ["++", "<"],
+              hint: "Gunakan i++ untuk menambah penghitung. Kondisi: i < 3 supaya cetak tepat 3 kali.",
+            },
+            {
+              eyebrow: "Level 3 — Selalu jalan minimal sekali",
+              story:
+                "i dimulai dari 10, kondisi while (i < 5) langsung false. Tapi do...while tetap jalan 1x! Isi operator kondisinya.",
+              output: "Halo",
+              lines: [
+                {
+                  code: [
+                    ["s-kw", "let"],
+                    ["s-var", " i "],
+                    ["s-op", "="],
+                    ["s-num", " 10"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-kw", "do"],
+                    ["s-punct", " {"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-fn", "  console"],
+                    ["s-punct", "."],
+                    ["s-fn", "log"],
+                    ["s-punct", "("],
+                    ["s-str", '"Halo"'],
+                    ["s-punct", ");"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-punct", "} "],
+                    ["s-kw", "while"],
+                    ["s-punct", " (i "],
+                    ["blank", "<"],
+                    ["s-num", " 5"],
+                    ["s-punct", ");"],
+                  ],
+                },
+              ],
+              answers: ["<"],
+              hint: 'i = 10, kondisi (i < 5) → false. Tapi blok "do" sudah terlanjur jalan 1 kali sebelum kondisi dicek!',
+            },
+            {
+              eyebrow: "Level 4 — Studi kasus hotel",
+              story:
+                'Cetak nomor kamar "Kamar 101", "Kamar 102", "Kamar 103" untuk hotel The Grand. Isi nilai awal nomor dan variabelnya!',
+              output: "Kamar 101\nKamar 102\nKamar 103",
+              lines: [
+                {
+                  code: [
+                    ["s-kw", "let"],
+                    ["s-var", " nomor "],
+                    ["s-op", "="],
+                    ["blank", "101"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-kw", "do"],
+                    ["s-punct", " {"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-fn", "  console"],
+                    ["s-punct", "."],
+                    ["s-fn", "log"],
+                    ["s-punct", "("],
+                    ["s-str", '"Kamar " + '],
+                    ["blank", "nomor"],
+                    ["s-punct", ");"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-var", "  nomor"],
+                    ["s-op", "++"],
+                    ["s-punct", ";"],
+                  ],
+                },
+                {
+                  code: [
+                    ["s-punct", "} "],
+                    ["s-kw", "while"],
+                    ["s-punct", " (nomor <= 103);"],
+                  ],
+                },
+              ],
+              answers: ["101", "nomor"],
+              hint: 'Kamar dimulai dari nomor 101. Di dalam loop cetak "Kamar " + variabel nomor (bukan angka langsung).',
+            },
+          ],
+        },
+      };
+
+      /* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+      let currentTopic = null;
+      let currentLevel = 0;
+
+      /* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+      function show(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        const el = document.getElementById("screen-" + id);
+        el.classList.add("active");
+      }
+      function goMenu() {
+        show("menu");
+      }
+      function replayTopic() {
+        currentLevel = 0;
+        loadLevel();
+        show("level");
+      }
+      function startTopic(topic) {
+        currentTopic = topic;
+        currentLevel = 0;
+        loadLevel();
+        show("level");
+      }
+      function nextLevel() {
+        const t = TOPICS[currentTopic];
+        currentLevel++;
+        if (currentLevel >= t.levels.length) {
+          showComplete();
+        } else {
+          loadLevel();
+        }
+      }
+
+      /* ═══════════════════════════════════════
+   LOAD LEVEL
+═══════════════════════════════════════ */
+      function loadLevel() {
+        const t = TOPICS[currentTopic];
+        const lv = t.levels[currentLevel];
+        const acc = t.accent;
+
+        document.getElementById("tb-topic").textContent = t.name;
+        document.getElementById("tb-level").textContent = lv.eyebrow;
+
+        // Progress dots
+        const dotsEl = document.getElementById("progress-dots");
+        dotsEl.innerHTML = "";
+        t.levels.forEach((_, i) => {
+          const d = document.createElement("div");
+          d.className = "dot";
+          if (i < currentLevel) d.classList.add("done-" + acc);
+          if (i === currentLevel) d.classList.add("active-" + acc);
+          dotsEl.appendChild(d);
+        });
+
+        document.getElementById("q-eyebrow").textContent = lv.eyebrow;
+        document.getElementById("q-story").textContent = lv.story;
+        document.getElementById("q-output").textContent = lv.output;
+
+        // Build editor lines
+        const body = document.getElementById("editor-body");
+        body.innerHTML = "";
+        let blankIdx = 0;
+
+        lv.lines.forEach((line, lineNum) => {
+          const row = document.createElement("div");
+          row.className = "code-line";
+
+          const numEl = document.createElement("span");
+          numEl.className = "line-num";
+          numEl.textContent = lineNum + 1;
+          row.appendChild(numEl);
+
+          const content = document.createElement("span");
+          content.className = "line-content";
+
+          line.code.forEach(([cls, text]) => {
+            if (cls === "blank") {
+              const wrap = document.createElement("span");
+              wrap.className = "blank-wrap";
+              const inp = document.createElement("input");
+              inp.type = "text";
+              inp.className = "blank-input";
+              inp.autocomplete = "off";
+              inp.spellcheck = false;
+              inp.placeholder = "?";
+              inp.dataset.idx = blankIdx++;
+              const expected = lv.answers[inp.dataset.idx] || "";
+              inp.style.width = Math.max(60, expected.length * 12 + 28) + "px";
+              inp.addEventListener("input", () =>
+                inp.classList.remove("correct", "wrong"),
+              );
+              inp.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") checkAnswer();
+              });
+              wrap.appendChild(inp);
+              content.appendChild(wrap);
+            } else {
+              const span = document.createElement("span");
+              span.className = cls;
+              span.textContent = text;
+              content.appendChild(span);
+            }
+          });
+
+          row.appendChild(content);
+          body.appendChild(row);
+        });
+
+        hideFeedback();
+        document.getElementById("btn-check").style.display = "";
+        document.getElementById("btn-hint").style.display = "";
+        document.getElementById("btn-next").classList.remove("show");
+
+        // Style check button per accent
+        const btnCheck = document.getElementById("btn-check");
+        btnCheck.className =
+          "btn btn-primary" + (acc === "mint" ? " mint-theme" : "");
+      }
+
+      /* ═══════════════════════════════════════
+   ANSWER CHECKING
+═══════════════════════════════════════ */
+      function checkAnswer() {
+        const lv = TOPICS[currentTopic].levels[currentLevel];
+        const inputs = document.querySelectorAll(".blank-input");
+        let allCorrect = true;
+
+        inputs.forEach((inp) => {
+          const answer = lv.answers[parseInt(inp.dataset.idx)];
+          if (inp.value.trim() === answer) {
+            inp.classList.remove("wrong");
+            inp.classList.add("correct");
+          } else {
+            inp.classList.remove("correct");
+            inp.classList.add("wrong");
+            allCorrect = false;
+          }
+        });
+
+        if (allCorrect) {
+          showFeedback(
+            "ok",
+            "✅ <strong>Benar banget!</strong> Semua jawabanmu tepat. Lanjut ke level berikutnya!",
+          );
+          document.getElementById("btn-next").classList.add("show");
+          document.getElementById("btn-check").style.display = "none";
+          document.getElementById("btn-hint").style.display = "none";
+        } else {
+          showFeedback(
+            "err",
+            "❌ Ada yang salah nih. Coba cek lagi kotak yang berwarna merah!",
+          );
+        }
+      }
+
+      function showHint() {
+        const lv = TOPICS[currentTopic].levels[currentLevel];
+        showFeedback("hint", "💡 <strong>Hint:</strong> " + lv.hint);
+      }
+
+      function showFeedback(type, html) {
+        const fb = document.getElementById("feedback");
+        fb.className = "feedback show " + type;
+        document.getElementById("fb-text").innerHTML = html;
+      }
+      function hideFeedback() {
+        document.getElementById("feedback").className = "feedback";
+        document.getElementById("fb-text").innerHTML = "";
+      }
+
+      /* ═══════════════════════════════════════
+   COMPLETE SCREEN
+═══════════════════════════════════════ */
+      function showComplete() {
+        const t = TOPICS[currentTopic];
+        document.getElementById("c-title").textContent = "Selesai! 🎉";
+        document.getElementById("c-sub").textContent =
+          "Kamu sudah menyelesaikan semua level " +
+          t.name +
+          ". Kerja keras terbayar!";
+        document.getElementById("c-stars").textContent = "⭐⭐⭐⭐";
+        document.getElementById("btn-replay").textContent =
+          "🔁 Ulangi " + t.name;
+        show("complete");
+      }
+    </script>
+  </body>
+</html>
