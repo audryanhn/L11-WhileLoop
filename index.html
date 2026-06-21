@@ -3,15 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Loop Quest — While & Do While</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <title>Loop Practice — While & Do While</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-
     <style>
+      :root {
+        --bg: #0f0e17;
+        --surf: #1a1933;
+        --card: #22213a;
+        --bdr: #2e2d4d;
+        --coral: #ff6b6b;
+        --yel: #ffe66d;
+        --mint: #6bffb8;
+        --purp: #b48eff;
+        --blue: #6bcfff;
+        --txt: #fffffe;
+        --muted: #8f8bb0;
+        --err: #ff4d6d;
+        --ui: "Space Grotesk", sans-serif;
+        --mono: "JetBrains Mono", monospace;
+        --r: 10px;
+      }
       *,
       *::before,
       *::after {
@@ -20,1443 +34,1155 @@
         padding: 0;
       }
 
-      :root {
-        --bg: #0f1117;
-        --bg2: #181b25;
-        --bg3: #1f2333;
-        --bg4: #252a3d;
-        --purple: #7c6af7;
-        --purple-dim: #4b44a0;
-        --purple-glow: #7c6af740;
-        --mint: #3ecfa4;
-        --mint-dim: #1a7a60;
-        --mint-glow: #3ecfa430;
-        --amber: #f5c842;
-        --amber-dim: #7a6010;
-        --red: #f26a6a;
-        --red-dim: #7a2020;
-        --text: #eef0f8;
-        --text2: #9096b4;
-        --text3: #5a607a;
-        --border: #2c3148;
-        --border2: #3c4260;
-        --radius: 12px;
-        --radius-sm: 8px;
-        --radius-lg: 18px;
-      }
-
-      html {
-        font-size: 16px;
-      }
-
       body {
-        font-family: "Nunito", sans-serif;
+        font-family: var(--ui);
         background: var(--bg);
-        color: var(--text);
+        color: var(--txt);
+        padding: 0 12px 80px;
         min-height: 100vh;
-        overflow-x: hidden;
-        line-height: 1.6;
       }
 
-      /* ─── BG DECORATION ─── */
-      body::before {
-        content: "";
-        position: fixed;
-        top: -200px;
-        left: -200px;
-        width: 600px;
-        height: 600px;
-        background: radial-gradient(circle, #7c6af718 0%, transparent 70%);
-        pointer-events: none;
-        z-index: 0;
-      }
-      body::after {
-        content: "";
-        position: fixed;
-        bottom: -150px;
-        right: -150px;
-        width: 500px;
-        height: 500px;
-        background: radial-gradient(circle, #3ecfa412 0%, transparent 70%);
-        pointer-events: none;
-        z-index: 0;
-      }
-
-      #app {
-        position: relative;
-        z-index: 1;
-        max-width: 700px;
+      /* ── HEADER ── */
+      .site-header {
+        max-width: 860px;
         margin: 0 auto;
-        padding: 2rem 1.25rem 4rem;
-        min-height: 100vh;
-      }
-
-      /* ─── SCREENS ─── */
-      .screen {
-        display: none;
-      }
-      .screen.active {
-        display: block;
-        animation: fadeIn 0.3s ease;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(12px);
-        }
-        to {
-          opacity: 1;
-          transform: none;
-        }
-      }
-
-      /* ─── MENU ─── */
-      .brand {
+        padding: 28px 0 10px;
         text-align: center;
-        margin-bottom: 2.5rem;
-        padding-top: 1.5rem;
       }
-      .brand-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 64px;
-        height: 64px;
-        background: var(--bg3);
-        border: 1.5px solid var(--border2);
-        border-radius: 20px;
-        font-size: 28px;
-        margin-bottom: 1rem;
-      }
-      .brand h1 {
-        font-size: 2rem;
-        font-weight: 800;
-        letter-spacing: -0.5px;
-        background: linear-gradient(135deg, #7c6af7, #3ecfa4);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-      .brand p {
-        color: var(--text2);
-        font-size: 1rem;
-        margin-top: 0.25rem;
-      }
-
-      .topic-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-        margin-bottom: 2rem;
-      }
-
-      .topic-card {
-        background: var(--bg2);
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius-lg);
-        padding: 1.5rem 1.25rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        position: relative;
-        overflow: hidden;
-        text-align: left;
-      }
-      .topic-card::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        transition: opacity 0.2s;
-      }
-      .topic-card.purple::before {
-        background: radial-gradient(
-          circle at top left,
-          #7c6af712,
-          transparent 60%
-        );
-      }
-      .topic-card.mint::before {
-        background: radial-gradient(
-          circle at top left,
-          #3ecfa412,
-          transparent 60%
-        );
-      }
-      .topic-card:hover {
-        transform: translateY(-3px);
-      }
-      .topic-card.purple:hover {
-        border-color: var(--purple-dim);
-        box-shadow: 0 8px 30px #7c6af722;
-      }
-      .topic-card.mint:hover {
-        border-color: var(--mint-dim);
-        box-shadow: 0 8px 30px #3ecfa422;
-      }
-      .topic-card:hover::before {
-        opacity: 1;
-      }
-
-      .topic-pill {
-        display: inline-block;
+      .eyebrow {
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.08em;
+        letter-spacing: 3px;
         text-transform: uppercase;
-        padding: 3px 10px;
-        border-radius: 99px;
-        margin-bottom: 0.85rem;
-      }
-      .topic-pill.purple {
-        background: #7c6af722;
-        color: #a89af8;
-        border: 1px solid #7c6af740;
-      }
-      .topic-pill.mint {
-        background: #3ecfa422;
-        color: #5edfc0;
-        border: 1px solid #3ecfa440;
-      }
-
-      .topic-card h2 {
-        font-size: 1.2rem;
-        font-weight: 800;
-        font-family: "Fira Code", monospace;
-        color: var(--text);
-        margin-bottom: 0.4rem;
-      }
-      .topic-card p {
-        font-size: 0.875rem;
-        color: var(--text2);
-        line-height: 1.5;
-      }
-      .topic-meta {
-        margin-top: 1rem;
-        font-size: 0.8rem;
-        color: var(--text3);
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .info-bar {
-        background: var(--bg2);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 1rem 1.25rem;
-        font-size: 0.875rem;
-        color: var(--text2);
-        display: flex;
-        gap: 12px;
-        align-items: flex-start;
-      }
-      .info-bar span:first-child {
-        font-size: 1.1rem;
-        flex-shrink: 0;
-        margin-top: 1px;
-      }
-
-      /* ─── LEVEL SCREEN ─── */
-      .level-topbar {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 1.5rem;
-      }
-      .btn-back {
-        background: var(--bg3);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        padding: 7px 14px;
-        cursor: pointer;
-        font-size: 0.875rem;
-        font-family: "Nunito", sans-serif;
-        font-weight: 600;
-        color: var(--text2);
-        transition: all 0.15s;
-      }
-      .btn-back:hover {
-        background: var(--bg4);
-        color: var(--text);
-        border-color: var(--border2);
-      }
-
-      .topbar-info {
-        flex: 1;
-      }
-      .topbar-title {
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: var(--text2);
-      }
-      .topbar-level {
-        font-size: 1rem;
-        font-weight: 800;
-        color: var(--text);
-      }
-
-      .progress-dots {
-        display: flex;
-        gap: 7px;
-        align-items: center;
-      }
-      .dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--border2);
-        transition: all 0.3s ease;
-        border: 1.5px solid transparent;
-      }
-      .dot.done-purple {
-        background: var(--purple);
-        box-shadow: 0 0 8px var(--purple-glow);
-      }
-      .dot.done-mint {
-        background: var(--mint);
-        box-shadow: 0 0 8px var(--mint-glow);
-      }
-      .dot.active-purple {
-        background: transparent;
-        border-color: var(--purple);
-        box-shadow: 0 0 6px var(--purple-glow);
-      }
-      .dot.active-mint {
-        background: transparent;
-        border-color: var(--mint);
-        box-shadow: 0 0 6px var(--mint-glow);
-      }
-
-      /* ─── QUESTION CARD ─── */
-      .question-card {
-        background: var(--bg2);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        padding: 1.5rem;
-        margin-bottom: 14px;
-      }
-
-      .q-eyebrow {
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--text3);
-        margin-bottom: 0.6rem;
-      }
-      .q-story {
-        font-size: 1rem;
-        color: var(--text);
-        line-height: 1.65;
-        margin-bottom: 1.25rem;
-        font-weight: 500;
-      }
-
-      .output-label {
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: var(--text3);
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
+        color: var(--coral);
         margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
       }
-      .output-label::before {
-        content: "";
-        display: inline-block;
-        width: 3px;
-        height: 3px;
-        border-radius: 50%;
-        background: var(--text3);
-      }
-
-      .output-box {
-        background: var(--bg);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        padding: 12px 16px;
-        font-family: "Fira Code", monospace;
-        font-size: 0.875rem;
-        color: var(--mint);
-        white-space: pre;
-        line-height: 1.8;
-      }
-
-      /* ─── CODE EDITOR ─── */
-      .code-editor {
-        background: var(--bg);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        overflow: hidden;
-        margin-bottom: 14px;
-      }
-
-      .editor-header {
-        background: var(--bg2);
-        border-bottom: 1px solid var(--border);
-        padding: 10px 16px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .editor-dots {
-        display: flex;
-        gap: 6px;
-      }
-      .editor-dots span {
-        width: 11px;
-        height: 11px;
-        border-radius: 50%;
-        background: var(--border2);
-      }
-      .editor-dots span:nth-child(1) {
-        background: #f26a6a44;
-      }
-      .editor-dots span:nth-child(2) {
-        background: #f5c84244;
-      }
-      .editor-dots span:nth-child(3) {
-        background: #3ecfa444;
-      }
-
-      .editor-filename {
-        font-size: 0.8rem;
-        font-family: "Fira Code", monospace;
-        color: var(--text3);
-        flex: 1;
-      }
-
-      .editor-body {
-        padding: 1.25rem 0;
-      }
-
-      .code-line {
-        display: flex;
-        align-items: center;
-        padding: 3px 0;
-        font-family: "Fira Code", monospace;
-        font-size: 0.9rem;
-        color: var(--text);
-        line-height: 2;
-      }
-      .line-num {
-        width: 40px;
-        text-align: right;
-        padding-right: 14px;
-        color: var(--text3);
-        font-size: 0.8rem;
-        user-select: none;
-        flex-shrink: 0;
-      }
-      .line-content {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1px;
-        padding-right: 1rem;
-      }
-      .kw {
-        color: #a89af8;
-      }
-      .str {
-        color: #f5c842;
-      }
-      .num {
-        color: #3ecfa4;
-      }
-      .op {
-        color: #f26a6a;
-      }
-      .fn {
-        color: #7dc6f5;
-      }
-      .cm {
-        color: var(--text3);
-        font-style: italic;
-      }
-      .plain {
-        color: var(--text);
-      }
-
-      .blank-wrap {
-        display: inline-flex;
-        align-items: center;
-        position: relative;
-      }
-      .blank-input {
-        font-family: "Fira Code", monospace;
-        font-size: 0.9rem;
-        font-weight: 500;
-        background: var(--bg3);
-        border: 1.5px solid var(--border2);
-        border-radius: 6px;
-        padding: 0 10px;
-        height: 30px;
-        color: var(--text);
-        outline: none;
-        transition: all 0.2s ease;
-        min-width: 60px;
-        text-align: center;
-      }
-      .blank-input::placeholder {
-        color: var(--text3);
-      }
-      .blank-input:focus {
-        border-color: var(--purple);
-        box-shadow: 0 0 0 3px var(--purple-glow);
-        background: var(--bg4);
-      }
-      .blank-input.correct {
-        border-color: var(--mint);
-        background: #3ecfa412;
-        color: var(--mint);
-        box-shadow: 0 0 0 3px var(--mint-glow);
-      }
-      .blank-input.wrong {
-        border-color: var(--red);
-        background: #f26a6a12;
-        color: var(--red);
-        box-shadow: 0 0 0 3px #f26a6a30;
-        animation: shake 0.35s ease;
-      }
-      @keyframes shake {
-        0%,
-        100% {
-          transform: translateX(0);
-        }
-        20% {
-          transform: translateX(-6px);
-        }
-        60% {
-          transform: translateX(6px);
-        }
-      }
-
-      /* ─── FEEDBACK ─── */
-      .feedback {
-        border-radius: var(--radius);
-        padding: 12px 16px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        display: none;
-        gap: 10px;
-        align-items: flex-start;
-        margin-bottom: 14px;
-      }
-      .feedback.show {
-        display: flex;
-        animation: feedIn 0.2s ease;
-      }
-      @keyframes feedIn {
-        from {
-          opacity: 0;
-          transform: translateY(-4px);
-        }
-        to {
-          opacity: 1;
-          transform: none;
-        }
-      }
-      .feedback.ok {
-        background: #3ecfa415;
-        border: 1px solid #3ecfa440;
-        color: #5edfc0;
-      }
-      .feedback.err {
-        background: #f26a6a15;
-        border: 1px solid #f26a6a40;
-        color: #f5a0a0;
-      }
-      .feedback.hint {
-        background: #f5c84215;
-        border: 1px solid #f5c84240;
-        color: #f5d878;
-      }
-      .feedback-icon {
-        font-size: 1.1rem;
-        flex-shrink: 0;
-        margin-top: 1px;
-      }
-      .feedback-text {
-        line-height: 1.5;
-      }
-
-      /* ─── ACTION ROW ─── */
-      .action-row {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
-
-      .btn {
-        font-family: "Nunito", sans-serif;
+      .site-header h1 {
+        font-size: clamp(22px, 4vw, 34px);
         font-weight: 700;
-        font-size: 0.9rem;
-        border-radius: var(--radius-sm);
-        padding: 10px 20px;
-        cursor: pointer;
-        border: none;
-        transition: all 0.15s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
+        line-height: 1.2;
       }
-      .btn:active {
-        transform: scale(0.97);
+      .site-header h1 em {
+        color: var(--yel);
+        font-style: normal;
+      }
+      .site-header p {
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 6px;
       }
 
-      .btn-primary {
-        background: var(--purple);
-        color: #fff;
-        box-shadow: 0 4px 14px #7c6af740;
-      }
-      .btn-primary:hover {
-        background: #8e80f8;
-        box-shadow: 0 4px 20px #7c6af760;
-      }
-
-      .btn-primary.mint-theme {
-        background: var(--mint);
-        color: #0a2e24;
-        box-shadow: 0 4px 14px #3ecfa440;
-      }
-      .btn-primary.mint-theme:hover {
-        background: #52e0b5;
-        box-shadow: 0 4px 20px #3ecfa460;
-      }
-
-      .btn-ghost {
-        background: var(--bg3);
-        border: 1px solid var(--border);
-        color: var(--text2);
-      }
-      .btn-ghost:hover {
-        background: var(--bg4);
-        color: var(--text);
-        border-color: var(--border2);
-      }
-
-      .btn-next {
-        background: var(--mint);
-        color: #0a2e24;
-        font-weight: 800;
-        box-shadow: 0 4px 14px #3ecfa440;
-        display: none;
-      }
-      .btn-next:hover {
-        background: #52e0b5;
-      }
-      .btn-next.show {
-        display: inline-flex;
-      }
-
-      /* ─── COMPLETE SCREEN ─── */
-      .complete-wrap {
-        text-align: center;
-        padding: 3rem 1.5rem;
-      }
-      .complete-trophy {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-        display: block;
-        animation: bounce 0.6s ease;
-      }
-      @keyframes bounce {
-        0% {
-          transform: scale(0.5);
-          opacity: 0;
-        }
-        70% {
-          transform: scale(1.15);
-        }
-        100% {
-          transform: scale(1);
-          opacity: 1;
-        }
-      }
-      .complete-stars {
-        font-size: 2rem;
-        letter-spacing: 6px;
-        margin-bottom: 1rem;
-        animation: fadeIn 0.5s 0.2s both ease;
-      }
-      .complete-title {
-        font-size: 1.75rem;
-        font-weight: 800;
-        margin-bottom: 0.5rem;
-        animation: fadeIn 0.5s 0.3s both ease;
-      }
-      .complete-sub {
-        font-size: 1rem;
-        color: var(--text2);
-        margin-bottom: 2rem;
-        animation: fadeIn 0.5s 0.4s both ease;
-      }
-      .complete-actions {
+      /* ── CATEGORY TABS ── */
+      .cat-tabs {
+        max-width: 860px;
+        margin: 20px auto 0;
         display: flex;
-        gap: 12px;
-        justify-content: center;
+        gap: 8px;
+      }
+      .cat-tab {
+        flex: 1;
+        padding: 10px 0;
+        border: 2px solid var(--bdr);
+        border-radius: var(--r);
+        background: var(--surf);
+        color: var(--muted);
+        font-family: var(--ui);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+      }
+      .cat-tab:hover {
+        border-color: var(--purp);
+        color: var(--txt);
+      }
+      .cat-tab.active {
+        border-color: var(--coral);
+        color: var(--coral);
+        background: rgba(255, 107, 107, 0.08);
+      }
+
+      /* ── LEVEL STRIP ── */
+      .level-strip {
+        max-width: 860px;
+        margin: 12px auto 0;
+        display: flex;
+        gap: 6px;
         flex-wrap: wrap;
-        animation: fadeIn 0.5s 0.5s both ease;
+      }
+      .lbtn {
+        padding: 5px 15px;
+        border-radius: 99px;
+        border: 1.5px solid var(--bdr);
+        background: transparent;
+        color: var(--muted);
+        font-family: var(--ui);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .lbtn:hover {
+        border-color: var(--purp);
+        color: var(--txt);
+      }
+      .lbtn.active {
+        border-color: var(--coral);
+        color: var(--coral);
+      }
+      .lbtn.done {
+        border-color: var(--mint);
+        color: var(--bg);
+        background: var(--mint);
+      }
+      .lbtn.locked {
+        border-color: var(--bdr);
+        color: #3d3b5c;
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+      .lbtn.locked:hover {
+        border-color: var(--bdr);
+        color: #3d3b5c;
       }
 
-      /* ─── SYNTAX HIGHLIGHT HELPERS ─── */
-      .s-kw {
-        color: #a89af8;
+      /* ── PROGRESS ── */
+      .progress-row {
+        max-width: 860px;
+        margin: 10px auto 0;
+        display: flex;
+        gap: 10px;
+        align-items: center;
       }
-      .s-var {
-        color: #eef0f8;
+      .prog-bar {
+        flex: 1;
+        height: 5px;
+        background: var(--bdr);
+        border-radius: 99px;
+        overflow: hidden;
       }
-      .s-num {
-        color: #3ecfa4;
+      .prog-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--coral), var(--yel));
+        transition: width 0.4s;
       }
-      .s-str {
-        color: #f5c842;
-      }
-      .s-op {
-        color: #f26a6a;
-      }
-      .s-fn {
-        color: #7dc6f5;
-      }
-      .s-punct {
-        color: #5a607a;
+      .prog-label {
+        font-size: 12px;
+        color: var(--muted);
+        white-space: nowrap;
       }
 
-      /* ─── RESPONSIVE ─── */
-      @media (max-width: 500px) {
-        .topic-grid {
+      /* ── MAIN 2-COL ── */
+      .main-wrap {
+        max-width: 860px;
+        margin: 14px auto 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        align-items: start;
+      }
+      @media (max-width: 620px) {
+        .main-wrap {
           grid-template-columns: 1fr;
         }
-        .action-row {
-          flex-direction: column;
+      }
+
+      /* ── PANEL ── */
+      .panel {
+        background: var(--surf);
+        border: 1px solid var(--bdr);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .panel-head {
+        padding: 9px 13px;
+        border-bottom: 1px solid var(--bdr);
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .circles {
+        display: flex;
+        gap: 5px;
+      }
+      .c {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+      }
+      .cr {
+        background: #ff5f57;
+      }
+      .cy {
+        background: #febc2e;
+      }
+      .cg {
+        background: #28c840;
+      }
+      .panel-head span {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--muted);
+        margin-left: 3px;
+      }
+
+      /* ── SOAL ── */
+      .soal-body {
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
+      }
+      .badge-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .badge {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, var(--coral), #ff9a6b);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        color: #fff;
+      }
+      .level-meta h2 {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      .tag-row {
+        display: flex;
+        gap: 5px;
+        margin-top: 4px;
+        flex-wrap: wrap;
+      }
+      .tag {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 99px;
+        background: rgba(107, 207, 255, 0.12);
+        color: var(--blue);
+        letter-spacing: 0.5px;
+      }
+      .task-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--bdr);
+        border-radius: var(--r);
+        padding: 12px 14px;
+        font-size: 13.5px;
+        line-height: 1.75;
+      }
+      .task-lbl {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--yel);
+        margin-bottom: 6px;
+      }
+
+      /* ── EDITOR ── */
+      .editor-body {
+        padding: 10px 12px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      textarea.code-ed {
+        width: 100%;
+        height: 190px;
+        padding: 12px;
+        background: var(--card);
+        border: 1.5px solid var(--bdr);
+        border-radius: var(--r);
+        color: var(--txt);
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 1.7;
+        resize: none;
+        overflow-y: auto;
+        outline: none;
+        transition: border-color 0.2s;
+        tab-size: 2;
+      }
+      textarea.code-ed:focus {
+        border-color: var(--coral);
+      }
+      textarea.code-ed.ok {
+        border-color: var(--mint);
+      }
+      textarea.code-ed.bad {
+        border-color: var(--err);
+      }
+      .btn-row {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .btn {
+        font-family: var(--ui);
+        font-size: 13px;
+        font-weight: 600;
+        padding: 7px 18px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.15s;
+      }
+      .btn-run {
+        background: var(--coral);
+        color: #fff;
+      }
+      .btn-run:hover {
+        background: #f04f4f;
+      }
+      .btn-reset {
+        background: transparent;
+        color: var(--muted);
+        border: 1.5px solid var(--bdr);
+      }
+      .btn-reset:hover {
+        color: var(--txt);
+        border-color: var(--muted);
+      }
+      .btn-next {
+        background: var(--mint);
+        color: var(--bg);
+        margin-left: auto;
+      }
+      .btn-next:hover {
+        filter: brightness(1.1);
+      }
+      .shortcut-tip {
+        font-size: 11px;
+        color: var(--muted);
+        font-family: var(--mono);
+      }
+
+      /* ── OUTPUT AREA ── */
+      .output-wrap {
+        max-width: 860px;
+        margin: 14px auto 0;
+        background: var(--surf);
+        border: 1px solid var(--bdr);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .output-head {
+        padding: 9px 13px;
+        border-bottom: 1px solid var(--bdr);
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .out-status {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--muted);
+        margin-left: 4px;
+      }
+      .output-canvas {
+        min-height: 160px;
+        padding: 16px 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: flex-end;
+        justify-content: flex-start;
+        overflow-x: auto;
+      }
+      .empty-state {
+        color: var(--bdr);
+        font-size: 13px;
+        font-family: var(--mono);
+        margin: auto;
+      }
+
+      /* ── DOG SVG CARD ── */
+      .dog-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      }
+      .dog-card .dog-label {
+        font-size: 11px;
+        font-family: var(--mono);
+        color: var(--muted);
+      }
+      @keyframes popIn {
+        from {
+          transform: scale(0.4) translateY(16px);
+          opacity: 0;
         }
-        .action-row .btn {
-          width: 100%;
-          justify-content: center;
+        to {
+          transform: scale(1) translateY(0);
+          opacity: 1;
         }
-        .brand h1 {
-          font-size: 1.6rem;
-        }
+      }
+
+      /* ── ERROR ── */
+      .err-panel {
+        padding: 14px 16px;
+        font-family: var(--mono);
+        font-size: 12.5px;
+        color: var(--err);
+        line-height: 1.8;
+      }
+      .err-panel .err-name {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 3px;
+      }
+      .err-panel .err-tip {
+        color: #ff8fa3;
+        margin-top: 6px;
+        font-size: 12px;
+        font-family: var(--ui);
+      }
+
+      /* ── SUCCESS ── */
+      .success-bar {
+        display: none;
+        max-width: 860px;
+        margin: 12px auto 0;
+        background: rgba(107, 255, 184, 0.08);
+        border: 1px solid rgba(107, 255, 184, 0.3);
+        border-radius: var(--r);
+        padding: 12px 16px;
+        font-size: 13.5px;
+        color: var(--mint);
+        line-height: 1.6;
+      }
+      .success-bar.show {
+        display: block;
+      }
+
+      /* ── WRONG ANSWER FEEDBACK ── */
+      .wrong-bar {
+        display: none;
+        max-width: 860px;
+        margin: 10px auto 0;
+        background: rgba(255, 77, 109, 0.07);
+        border: 1px solid rgba(255, 77, 109, 0.3);
+        border-radius: var(--r);
+        padding: 11px 16px;
+        font-size: 13px;
+        color: #ff8fa3;
+        line-height: 1.6;
+      }
+      .wrong-bar.show {
+        display: block;
+      }
+
+      /* ── VALIDATION DETAIL inside output ── */
+      .val-detail {
+        padding: 12px 16px;
+        font-size: 13px;
+        line-height: 1.8;
+        border-top: 1px solid var(--bdr);
+      }
+      .val-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+      .val-row .tick {
+        font-size: 14px;
+      }
+      .val-row .val-txt {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--muted);
       }
     </style>
   </head>
   <body>
-    <div id="app">
-      <!-- ══ MENU ══ -->
-      <div id="screen-menu" class="screen active">
-        <div class="brand">
-          <div class="brand-icon">🔁</div>
-          <h1>Loop Quest</h1>
-          <p>Latihan while &amp; do while loop — isi kotak kosongnya!</p>
-        </div>
+    <header class="site-header">
+      <p class="eyebrow">JavaScript Practice</p>
+      <h1>Loop Quest — <em>While</em> Edition</h1>
+      <p>
+        Isi bagian
+        <code
+          style="
+            background: rgba(255, 255, 255, 0.07);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+          "
+          >...</code
+        >
+        lalu klik Run — lihat hasilnya sebagai gambar!
+      </p>
+    </header>
 
-        <div class="topic-grid">
-          <div class="topic-card purple" onclick="startTopic('while')">
-            <div class="topic-pill purple">while loop</div>
-            <h2>while</h2>
-            <p>Ulangi kode selama kondisi bernilai <em>true</em></p>
-            <div class="topic-meta"><span>🎮</span> 4 level</div>
-          </div>
-          <div class="topic-card mint" onclick="startTopic('dowhile')">
-            <div class="topic-pill mint">do while</div>
-            <h2>do…while</h2>
-            <p>Jalankan dulu, baru cek kondisinya</p>
-            <div class="topic-meta"><span>🎮</span> 4 level</div>
-          </div>
-        </div>
+    <div class="cat-tabs">
+      <button class="cat-tab active" onclick="setCategory('while')">
+        ⟳ &nbsp;while loop
+      </button>
+      <button class="cat-tab" onclick="setCategory('dowhile')">
+        ↺ &nbsp;do...while loop
+      </button>
+    </div>
 
-        <div class="info-bar">
-          <span>💡</span>
-          <span
-            >Isi kotak <strong style="color: var(--purple)">___</strong> yang
-            kosong di dalam kode, lalu klik <strong>Cek Jawaban</strong>. Tekan
-            <strong>Hint</strong> kalau butuh petunjuk!</span
-          >
-        </div>
+    <div class="level-strip" id="level-strip"></div>
+
+    <div class="progress-row">
+      <div class="prog-bar">
+        <div class="prog-fill" id="prog-fill" style="width: 0%"></div>
       </div>
+      <span class="prog-label" id="prog-label">0 / 0 selesai</span>
+    </div>
 
-      <!-- ══ LEVEL SCREEN ══ -->
-      <div id="screen-level" class="screen">
-        <div class="level-topbar">
-          <button class="btn-back" onclick="goMenu()">← Menu</button>
-          <div class="topbar-info">
-            <div class="topbar-title" id="tb-topic"></div>
-            <div class="topbar-level" id="tb-level"></div>
+    <div class="main-wrap">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="circles">
+            <div class="c cr"></div>
+            <div class="c cy"></div>
+            <div class="c cg"></div>
           </div>
-          <div class="progress-dots" id="progress-dots"></div>
+          <span>soal.js</span>
         </div>
-
-        <div class="question-card">
-          <div class="q-eyebrow" id="q-eyebrow"></div>
-          <div class="q-story" id="q-story"></div>
-          <div class="output-label">Output yang diharapkan</div>
-          <div class="output-box" id="q-output"></div>
-        </div>
-
-        <div class="code-editor">
-          <div class="editor-header">
-            <div class="editor-dots">
-              <span></span><span></span><span></span>
+        <div class="soal-body">
+          <div class="badge-row">
+            <div class="badge" id="badge-num">1</div>
+            <div class="level-meta">
+              <h2 id="lvl-title">—</h2>
+              <div class="tag-row" id="lvl-tags"></div>
             </div>
-            <div class="editor-filename">script.js</div>
           </div>
-          <div class="editor-body" id="editor-body"></div>
-        </div>
-
-        <div class="feedback" id="feedback">
-          <span class="feedback-icon" id="fb-icon"></span>
-          <span class="feedback-text" id="fb-text"></span>
-        </div>
-
-        <div class="action-row">
-          <button
-            class="btn btn-primary"
-            id="btn-check"
-            onclick="checkAnswer()"
-          >
-            ▶ Cek Jawaban
-          </button>
-          <button class="btn btn-ghost" id="btn-hint" onclick="showHint()">
-            💡 Hint
-          </button>
-          <button class="btn btn-next" id="btn-next" onclick="nextLevel()">
-            Level Berikutnya →
-          </button>
+          <div class="task-box">
+            <div class="task-lbl">📋 Tugas</div>
+            <div id="lvl-task"></div>
+          </div>
         </div>
       </div>
 
-      <!-- ══ COMPLETE SCREEN ══ -->
-      <div id="screen-complete" class="screen">
-        <div class="complete-wrap">
-          <span class="complete-trophy">🏆</span>
-          <div class="complete-stars" id="c-stars">⭐⭐⭐⭐</div>
-          <div class="complete-title" id="c-title">Selesai!</div>
-          <div class="complete-sub" id="c-sub">Kerja bagus!</div>
-          <div class="complete-actions">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="circles">
+            <div class="c cr"></div>
+            <div class="c cy"></div>
+            <div class="c cg"></div>
+          </div>
+          <span>jawaban.js</span>
+        </div>
+        <div class="editor-body">
+          <textarea class="code-ed" id="editor" spellcheck="false"></textarea>
+          <div class="btn-row">
+            <button class="btn btn-run" onclick="runCode()">▶ Run</button>
+            <button class="btn btn-reset" onclick="resetCode()">↺ Reset</button>
+            <span class="shortcut-tip">Ctrl+Enter</span>
             <button
-              class="btn btn-primary"
-              id="btn-replay"
-              onclick="replayTopic()"
+              class="btn btn-next"
+              id="btn-next"
+              style="display: none"
+              onclick="nextLevel()"
             >
-              🔁 Ulangi Lagi
-            </button>
-            <button class="btn btn-ghost" onclick="goMenu()">
-              ← Pilih Topik Lain
+              Berikutnya →
             </button>
           </div>
         </div>
       </div>
     </div>
 
+    <div class="output-wrap">
+      <div class="output-head">
+        <div class="circles">
+          <div class="c cr"></div>
+          <div class="c cy"></div>
+          <div class="c cg"></div>
+        </div>
+        <span class="out-status" id="out-status"
+          >— tekan Run untuk melihat output</span
+        >
+      </div>
+      <div class="output-canvas" id="out-canvas">
+        <div class="empty-state">▷ karakter akan muncul di sini</div>
+      </div>
+    </div>
+
+    <div class="success-bar" id="success-bar"></div>
+    <div class="wrong-bar" id="wrong-bar"></div>
+
     <script>
-      /* ═══════════════════════════════════════
-   DATA — LEVEL DEFINITIONS
-═══════════════════════════════════════ */
-      const TOPICS = {
-        while: {
-          name: "while loop",
-          accent: "purple",
-          levels: [
-            {
-              eyebrow: "Level 1 — Struktur dasar",
-              story:
-                "Kamu ingin mencetak angka 1 sampai 3 menggunakan while loop. Lengkapi kata kunci dan operatornya!",
-              output: "1\n2\n3",
-              lines: [
-                {
-                  code: [
-                    ["s-kw", "let"],
-                    ["s-var", " i "],
-                    ["s-op", "="],
-                    ["s-num", " 1"],
-                    ["s-punct", ";;"],
-                  ],
-                },
-                {
-                  code: [
-                    ["blank", "while"],
-                    ["s-punct", " (i "],
-                    ["s-op", "<="],
-                    ["s-num", " 3"],
-                    ["s-punct", ") {"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-fn", "  console"],
-                    ["s-punct", "."],
-                    ["s-fn", "log"],
-                    ["s-punct", "(i);"],
-                  ],
-                  indent: 2,
-                },
-                {
-                  code: [
-                    ["s-var", "  i"],
-                    ["blank", "++"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                { code: [["s-punct", "}"]] },
-              ],
-              answers: ["while", "++"],
-              hint: 'Kata kunci loopnya "while". Untuk tambah i, tulis "++" setelah variabelnya.',
-            },
-            {
-              eyebrow: "Level 2 — Kondisi loop",
-              story:
-                "Hitung mundur dari 5 sampai 1. Tentukan operator kondisi dan cara mengurangi i!",
-              output: "5\n4\n3\n2\n1",
-              lines: [
-                {
-                  code: [
-                    ["s-kw", "let"],
-                    ["s-var", " i "],
-                    ["s-op", "="],
-                    ["s-num", " 5"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-kw", "while"],
-                    ["s-punct", " (i "],
-                    ["blank", ">="],
-                    ["s-num", " 1"],
-                    ["s-punct", ") {"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-fn", "  console"],
-                    ["s-punct", "."],
-                    ["s-fn", "log"],
-                    ["s-punct", "(i);"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-var", "  i"],
-                    ["blank", "--"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                { code: [["s-punct", "}"]] },
-              ],
-              answers: [">=", "--"],
-              hint: 'i mulai dari 5, harus berjalan selama i >= 1. Untuk kurangi i, gunakan "--".',
-            },
-            {
-              eyebrow: "Level 3 — Menghitung pengulangan",
-              story:
-                'Cetak "Halo!" sebanyak 3 kali. Variabel penghitung dimulai dari 0, tentukan kondisi yang tepat!',
-              output: "Halo!\nHalo!\nHalo!",
-              lines: [
-                {
-                  code: [
-                    ["s-kw", "let"],
-                    ["s-var", " i "],
-                    ["s-op", "="],
-                    ["s-num", " 0"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-kw", "while"],
-                    ["s-punct", " (i "],
-                    ["blank", "<"],
-                    ["s-num", " 3"],
-                    ["s-punct", ") {"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-fn", "  console"],
-                    ["s-punct", "."],
-                    ["s-fn", "log"],
-                    ["s-punct", "("],
-                    ["s-str", '"Halo!"'],
-                    ["s-punct", ");"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-var", "  i"],
-                    ["blank", "++"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                { code: [["s-punct", "}"]] },
-              ],
-              answers: ["<", "++"],
-              hint: "Mulai dari 0, ingin 3 kali → kondisinya i < 3. Jangan lupa i++ biar tidak infinite loop!",
-            },
-            {
-              eyebrow: "Level 4 — Akumulasi nilai",
-              story:
-                "Jumlahkan angka 1 sampai 4 dengan while loop. Isi nilai awal sum dan nama variabel yang ditambahkan!",
-              output: "Total: 10",
-              lines: [
-                {
-                  code: [
-                    ["s-kw", "let"],
-                    ["s-var", " sum "],
-                    ["s-op", "="],
-                    ["blank", "0"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-kw", "let"],
-                    ["s-var", " i "],
-                    ["s-op", "="],
-                    ["s-num", " 1"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-kw", "while"],
-                    ["s-punct", " (i "],
-                    ["s-op", "<="],
-                    ["s-num", " 4"],
-                    ["s-punct", ") {"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-var", "  sum "],
-                    ["s-op", "+="],
-                    ["s-punct", " "],
-                    ["blank", "i"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-var", "  i"],
-                    ["s-op", "++"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                { code: [["s-punct", "}"]] },
-                {
-                  code: [
-                    ["s-fn", "console"],
-                    ["s-punct", "."],
-                    ["s-fn", "log"],
-                    ["s-punct", "("],
-                    ["s-str", '"Total: "'],
-                    ["s-punct", " + sum);"],
-                  ],
-                },
-              ],
-              answers: ["0", "i"],
-              hint: 'sum dimulai dari 0 (belum ada nilai). Di dalam loop, tambahkan nilai i ke sum dengan "+= i".',
-            },
-          ],
+      /* ════════════════════════════════════════════
+   SVG KARAKTER — anjing & kucing kartun
+════════════════════════════════════════════ */
+
+      /* Anjing kartun — warna bisa dikustomisasi */
+      function svgDog(color = "#e8a87c", delay = 0) {
+        const c = color;
+        const d = `style="animation-delay:${delay}ms"`;
+        return `<div class="dog-card" ${d}>
+<svg width="72" height="88" viewBox="0 0 72 88" xmlns="http://www.w3.org/2000/svg">
+  <!-- telinga kiri -->
+  <ellipse cx="18" cy="28" rx="11" ry="16" fill="${darken(c)}" transform="rotate(-18 18 28)"/>
+  <!-- telinga kanan -->
+  <ellipse cx="54" cy="28" rx="11" ry="16" fill="${darken(c)}" transform="rotate(18 54 28)"/>
+  <!-- kepala -->
+  <ellipse cx="36" cy="34" rx="24" ry="22" fill="${c}"/>
+  <!-- moncong -->
+  <ellipse cx="36" cy="46" rx="13" ry="9" fill="${lighten(c)}"/>
+  <!-- mata kiri -->
+  <circle cx="26" cy="30" r="5" fill="#1a1a2e"/>
+  <circle cx="27.5" cy="28.5" r="1.5" fill="#fff"/>
+  <!-- mata kanan -->
+  <circle cx="46" cy="30" r="5" fill="#1a1a2e"/>
+  <circle cx="47.5" cy="28.5" r="1.5" fill="#fff"/>
+  <!-- hidung -->
+  <ellipse cx="36" cy="43" rx="4.5" ry="3" fill="#1a1a2e"/>
+  <circle cx="35" cy="42.5" r="1" fill="#555"/>
+  <!-- mulut -->
+  <path d="M31 48 Q36 53 41 48" fill="none" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- badan -->
+  <rect x="16" y="54" width="40" height="28" rx="14" fill="${c}"/>
+  <!-- ekor -->
+  <path d="M56 64 Q72 52 68 44" fill="none" stroke="${darken(c)}" stroke-width="5" stroke-linecap="round"/>
+  <!-- kaki kiri -->
+  <rect x="19" y="76" width="11" height="10" rx="5" fill="${darken(c)}"/>
+  <!-- kaki kanan -->
+  <rect x="42" y="76" width="11" height="10" rx="5" fill="${darken(c)}"/>
+</svg>
+</div>`;
+      }
+
+      /* Kucing kartun — untuk variasi di beberapa soal */
+      function svgCat(color = "#c9b8e8", delay = 0) {
+        const c = color;
+        const d = `style="animation-delay:${delay}ms"`;
+        return `<div class="dog-card" ${d}>
+<svg width="72" height="88" viewBox="0 0 72 88" xmlns="http://www.w3.org/2000/svg">
+  <!-- telinga kiri (lancip) -->
+  <polygon points="12,30 20,8 30,28" fill="${darken(c)}"/>
+  <!-- telinga kanan (lancip) -->
+  <polygon points="60,30 52,8 42,28" fill="${darken(c)}"/>
+  <!-- telinga dalam kiri -->
+  <polygon points="15,29 21,14 28,28" fill="#ffb8c8"/>
+  <!-- telinga dalam kanan -->
+  <polygon points="57,29 51,14 44,28" fill="#ffb8c8"/>
+  <!-- kepala -->
+  <ellipse cx="36" cy="34" rx="24" ry="22" fill="${c}"/>
+  <!-- moncong -->
+  <ellipse cx="36" cy="46" rx="11" ry="7" fill="${lighten(c)}"/>
+  <!-- mata kiri -->
+  <ellipse cx="26" cy="30" rx="5" ry="5.5" fill="#1a1a2e"/>
+  <ellipse cx="26" cy="29" rx="2" ry="3" fill="#2e8b57"/>
+  <circle cx="27" cy="28" r="1.2" fill="#fff"/>
+  <!-- mata kanan -->
+  <ellipse cx="46" cy="30" rx="5" ry="5.5" fill="#1a1a2e"/>
+  <ellipse cx="46" cy="29" rx="2" ry="3" fill="#2e8b57"/>
+  <circle cx="47" cy="28" r="1.2" fill="#fff"/>
+  <!-- hidung -->
+  <polygon points="36,41 33.5,44 38.5,44" fill="#ff9eb5"/>
+  <!-- mulut -->
+  <path d="M33,44 Q36,49 39,44" fill="none" stroke="#1a1a2e" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- kumis kiri -->
+  <line x1="24" y1="44" x2="10" y2="42" stroke="#aaa" stroke-width="1"/>
+  <line x1="24" y1="46" x2="9"  y2="47" stroke="#aaa" stroke-width="1"/>
+  <!-- kumis kanan -->
+  <line x1="48" y1="44" x2="62" y2="42" stroke="#aaa" stroke-width="1"/>
+  <line x1="48" y1="46" x2="63" y2="47" stroke="#aaa" stroke-width="1"/>
+  <!-- badan -->
+  <rect x="16" y="54" width="40" height="28" rx="14" fill="${c}"/>
+  <!-- ekor melengkung -->
+  <path d="M56 70 Q76 58 70 42 Q68 38 64 42" fill="none" stroke="${darken(c)}" stroke-width="5" stroke-linecap="round"/>
+  <!-- kaki kiri -->
+  <rect x="19" y="76" width="11" height="10" rx="5" fill="${darken(c)}"/>
+  <!-- kaki kanan -->
+  <rect x="42" y="76" width="11" height="10" rx="5" fill="${darken(c)}"/>
+</svg>
+</div>`;
+      }
+
+      /* helper warna sederhana */
+      function darken(hex) {
+        const [r, g, b] = hexToRgb(hex);
+        return `rgb(${Math.max(0, r - 40)},${Math.max(0, g - 40)},${Math.max(0, b - 40)})`;
+      }
+      function lighten(hex) {
+        const [r, g, b] = hexToRgb(hex);
+        return `rgb(${Math.min(255, r + 35)},${Math.min(255, g + 35)},${Math.min(255, b + 35)})`;
+      }
+      function hexToRgb(hex) {
+        const m = hex.replace("#", "").match(/.{2}/g);
+        return m ? m.map((x) => parseInt(x, 16)) : [200, 160, 100];
+      }
+
+      /* palet warna anjing per iterasi */
+      const DOG_COLORS = [
+        "#e8a87c",
+        "#f5c58a",
+        "#c8a06a",
+        "#e8c4a0",
+        "#d4936a",
+        "#f0b090",
+      ];
+      const CAT_COLORS = [
+        "#c9b8e8",
+        "#b8d4e8",
+        "#e8c9d4",
+        "#d4e8c9",
+        "#e8d4b8",
+        "#c4c9e8",
+      ];
+
+      /* ════════════════════════════════════════════
+   LEVEL DATA
+════════════════════════════════════════════ */
+      const WHILE_LEVELS = [
+        {
+          id: 1,
+          title: "Panggil Anjing!",
+          tags: ["while", "counter naik"],
+          task: `Buat while loop yang berjalan <strong>4 kali</strong>.<br>
+      Setiap iterasi, panggil <code>print(i)</code>.<br>
+      Output yang diharapkan: angka <strong>1, 2, 3, 4</strong> — dan lihat 4 anjing muncul!`,
+          starter: `let i = ...;
+
+while (i ... 4) {
+  print(i);
+  i++;
+}`,
+          charFn: (val, idx) =>
+            svgDog(DOG_COLORS[idx % DOG_COLORS.length], idx * 80),
+          label: (val) => val,
+          validate(out) {
+            return out.length === 4 && out.every((v, i) => Number(v) === i + 1);
+          },
+          successMsg:
+            "🐶 4 anjing muncul! Loop berjalan 4x — variabel <code>i</code> naik dari 1 sampai 4, berhenti saat kondisi tidak terpenuhi lagi.",
+          solution: [1, 2, 3, 4],
         },
+        {
+          id: 2,
+          title: "Lebih Banyak Kucing",
+          tags: ["while", "kondisi ≤"],
+          task: `Buat while loop yang menampilkan angka <strong>1 sampai 6</strong>.<br>
+      Lihat berapa banyak kucing yang muncul!<br>
+      Perhatikan kondisi yang tepat agar tidak kurang atau lebih.`,
+          starter: `let i = ...;
 
-        dowhile: {
-          name: "do…while loop",
-          accent: "mint",
-          levels: [
-            {
-              eyebrow: "Level 1 — Struktur dasar",
-              story:
-                "Gunakan do...while untuk mencetak angka 1 sampai 3. Lengkapi kedua kata kunci strukturnya!",
-              output: "1\n2\n3",
-              lines: [
-                {
-                  code: [
-                    ["s-kw", "let"],
-                    ["s-var", " i "],
-                    ["s-op", "="],
-                    ["s-num", " 1"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                {
-                  code: [
-                    ["blank", "do"],
-                    ["s-punct", " {"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-fn", "  console"],
-                    ["s-punct", "."],
-                    ["s-fn", "log"],
-                    ["s-punct", "(i);"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-var", "  i"],
-                    ["s-op", "++"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-punct", "} "],
-                    ["blank", "while"],
-                    ["s-punct", " (i <= 3);"],
-                  ],
-                },
-              ],
-              answers: ["do", "while"],
-              hint: 'Struktur do...while: kata "do" di awal blok, kata "while" di akhir setelah tanda "}".',
-            },
-            {
-              eyebrow: "Level 2 — Kondisi di akhir",
-              story:
-                'Cetak "Selamat datang!" 3 kali. Isi cara menambah i dan kondisi berhentinya!',
-              output: "Selamat datang!\nSelamat datang!\nSelamat datang!",
-              lines: [
-                {
-                  code: [
-                    ["s-kw", "let"],
-                    ["s-var", " i "],
-                    ["s-op", "="],
-                    ["s-num", " 0"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-kw", "do"],
-                    ["s-punct", " {"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-fn", "  console"],
-                    ["s-punct", "."],
-                    ["s-fn", "log"],
-                    ["s-punct", "("],
-                    ["s-str", '"Selamat datang!"'],
-                    ["s-punct", ");"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-var", "  i"],
-                    ["blank", "++"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-punct", "} "],
-                    ["s-kw", "while"],
-                    ["s-punct", " (i "],
-                    ["blank", "<"],
-                    ["s-num", " 3"],
-                    ["s-punct", ");"],
-                  ],
-                },
-              ],
-              answers: ["++", "<"],
-              hint: "Gunakan i++ untuk menambah penghitung. Kondisi: i < 3 supaya cetak tepat 3 kali.",
-            },
-            {
-              eyebrow: "Level 3 — Selalu jalan minimal sekali",
-              story:
-                "i dimulai dari 10, kondisi while (i < 5) langsung false. Tapi do...while tetap jalan 1x! Isi operator kondisinya.",
-              output: "Halo",
-              lines: [
-                {
-                  code: [
-                    ["s-kw", "let"],
-                    ["s-var", " i "],
-                    ["s-op", "="],
-                    ["s-num", " 10"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-kw", "do"],
-                    ["s-punct", " {"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-fn", "  console"],
-                    ["s-punct", "."],
-                    ["s-fn", "log"],
-                    ["s-punct", "("],
-                    ["s-str", '"Halo"'],
-                    ["s-punct", ");"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-punct", "} "],
-                    ["s-kw", "while"],
-                    ["s-punct", " (i "],
-                    ["blank", "<"],
-                    ["s-num", " 5"],
-                    ["s-punct", ");"],
-                  ],
-                },
-              ],
-              answers: ["<"],
-              hint: 'i = 10, kondisi (i < 5) → false. Tapi blok "do" sudah terlanjur jalan 1 kali sebelum kondisi dicek!',
-            },
-            {
-              eyebrow: "Level 4 — Studi kasus hotel",
-              story:
-                'Cetak nomor kamar "Kamar 101", "Kamar 102", "Kamar 103" untuk hotel The Grand. Isi nilai awal nomor dan variabelnya!',
-              output: "Kamar 101\nKamar 102\nKamar 103",
-              lines: [
-                {
-                  code: [
-                    ["s-kw", "let"],
-                    ["s-var", " nomor "],
-                    ["s-op", "="],
-                    ["blank", "101"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-kw", "do"],
-                    ["s-punct", " {"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-fn", "  console"],
-                    ["s-punct", "."],
-                    ["s-fn", "log"],
-                    ["s-punct", "("],
-                    ["s-str", '"Kamar " + '],
-                    ["blank", "nomor"],
-                    ["s-punct", ");"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-var", "  nomor"],
-                    ["s-op", "++"],
-                    ["s-punct", ";"],
-                  ],
-                },
-                {
-                  code: [
-                    ["s-punct", "} "],
-                    ["s-kw", "while"],
-                    ["s-punct", " (nomor <= 103);"],
-                  ],
-                },
-              ],
-              answers: ["101", "nomor"],
-              hint: 'Kamar dimulai dari nomor 101. Di dalam loop cetak "Kamar " + variabel nomor (bukan angka langsung).',
-            },
-          ],
+while (i ... ...) {
+  print(i);
+  i++;
+}`,
+          charFn: (val, idx) =>
+            svgCat(CAT_COLORS[idx % CAT_COLORS.length], idx * 60),
+          label: (val) => val,
+          validate(out) {
+            return out.length === 6 && out.every((v, i) => Number(v) === i + 1);
+          },
+          successMsg:
+            "🐱 6 kucing berhasil! Kondisi <code>i &lt;= 6</code> memastikan loop jalan sampai angka 6 inklusif.",
+          solution: [1, 2, 3, 4, 5, 6],
         },
-      };
+        {
+          id: 3,
+          title: "Hitung Mundur Anjing",
+          tags: ["while", "counter turun"],
+          task: `Anjing-anjing pergi pulang! Buat while loop yang menampilkan angka <strong>5 sampai 1</strong> (hitung mundur).<br>
+      Gunakan kondisi dan cara decrement yang sesuai.`,
+          starter: `let i = ...;
 
-      /* ═══════════════════════════════════════
-   STATE
-═══════════════════════════════════════ */
-      let currentTopic = null;
-      let currentLevel = 0;
+while (i ... 1) {
+  print(i);
+  i...;
+}`,
+          charFn: (val, idx) =>
+            svgDog(DOG_COLORS[(5 - idx) % DOG_COLORS.length], idx * 70),
+          label: (val) => val,
+          validate(out) {
+            return out.length === 5 && out.every((v, i) => Number(v) === 5 - i);
+          },
+          successMsg:
+            "🐶 Loop mundur berhasil! Kondisi <code>i &gt;= 1</code> dan <code>i--</code> membuat counter turun setiap iterasi.",
+          solution: [5, 4, 3, 2, 1],
+        },
+      ];
 
-      /* ═══════════════════════════════════════
-   NAVIGATION
-═══════════════════════════════════════ */
-      function show(id) {
-        document
-          .querySelectorAll(".screen")
-          .forEach((s) => s.classList.remove("active"));
-        const el = document.getElementById("screen-" + id);
-        el.classList.add("active");
+      const DOWHILE_LEVELS = [
+        {
+          id: 1,
+          title: "Do Dulu, Cek Belakangan",
+          tags: ["do...while", "eksekusi pertama"],
+          task: `Gunakan <strong>do...while</strong> untuk menampilkan angka <strong>1 sampai 3</strong>.<br>
+      Perhatikan struktur: blok <code>do { }</code> dijalankan <em>dulu</em>, kondisi dicek <em>sesudahnya</em>.`,
+          starter: `let i = ...;
+
+do {
+  print(i);
+  i++;
+} while (i ... 3);`,
+          solution: [1, 2, 3],
+          charFn: (val, idx) =>
+            svgDog(DOG_COLORS[idx % DOG_COLORS.length], idx * 90),
+          label: (val) => val,
+          validate(out) {
+            return out.length === 3 && out.every((v, i) => Number(v) === i + 1);
+          },
+          successMsg:
+            "do...while berjalan 3x! Blok <code>do</code> pasti dijalankan minimal 1 kali sebelum kondisi diperiksa.",
+        },
+        {
+          id: 2,
+          title: "Tetap Jalan Sekali!",
+          tags: ["do...while", "kondisi false dari awal"],
+          task: `Ini soal konsep penting! Variabel <code>x</code> mulai dari <strong>10</strong>, kondisi <code>x &lt; 5</code>.<br>
+      Kondisi sudah <em>false</em> sejak awal — tapi do...while tetap jalan. Berapa anjing yang muncul?`,
+          starter: `let x = ...;
+
+do {
+  print(x);
+  x++;
+} while (x < ...);`,
+          solution: [10],
+          charFn: (val, idx) => svgDog("#e8a87c", 0),
+          label: (val) => val,
+          validate(out) {
+            return out.length === 1 && Number(out[0]) === 10;
+          },
+          successMsg:
+            "1 anjing! do...while TETAP jalan 1x meski kondisi sudah false dari awal. Ini perbedaan utamanya dengan while biasa.",
+        },
+        {
+          id: 3,
+          title: "Campuran Anjing & Kucing",
+          tags: ["do...while", "counter", "variasi"],
+          task: `Gunakan <strong>do...while</strong> untuk menampilkan angka <strong>1 sampai 5</strong>.<br>
+      Kali ini outputnya campuran anjing dan kucing bergantian!`,
+          starter: `let i = ...;
+
+do {
+  print(i);
+  i++;
+} while (i ... 5);`,
+          solution: [1, 2, 3, 4, 5],
+          charFn: (val, idx) =>
+            idx % 2 === 0
+              ? svgDog(DOG_COLORS[idx % DOG_COLORS.length], idx * 70)
+              : svgCat(CAT_COLORS[idx % CAT_COLORS.length], idx * 70),
+          label: (val) => val,
+          validate(out) {
+            return out.length === 5 && out.every((v, i) => Number(v) === i + 1);
+          },
+          successMsg:
+            "do...while berjalan 5x — hasilnya anjing dan kucing bergantian sesuai jumlah iterasi.",
+        },
+      ];
+
+      /* ════════════════════════════════════════════
+   STATE & NAVIGATION
+════════════════════════════════════════════ */
+      let category = "while";
+      let currentIdx = 0;
+      let done = { while: new Set(), dowhile: new Set() };
+
+      function getLevels() {
+        return category === "while" ? WHILE_LEVELS : DOWHILE_LEVELS;
       }
-      function goMenu() {
-        show("menu");
+      function getCurrent() {
+        return getLevels()[currentIdx];
       }
-      function replayTopic() {
-        currentLevel = 0;
-        loadLevel();
-        show("level");
+
+      function setCategory(cat) {
+        category = cat;
+        currentIdx = 0;
+        document.querySelectorAll(".cat-tab").forEach((t, i) => {
+          t.classList.toggle(
+            "active",
+            (i === 0 && cat === "while") || (i === 1 && cat === "dowhile"),
+          );
+        });
+        renderStrip();
+        loadLevel(0);
       }
-      function startTopic(topic) {
-        currentTopic = topic;
-        currentLevel = 0;
-        loadLevel();
-        show("level");
+
+      function renderStrip() {
+        const lvls = getLevels(),
+          ds = done[category];
+        document.getElementById("level-strip").innerHTML = lvls
+          .map((l, i) => {
+            const isDone = ds.has(i);
+            const isActive = i === currentIdx;
+            /* soal terbuka jika: sudah selesai, sedang aktif, atau soal sebelumnya sudah selesai */
+            const unlocked =
+              isDone || isActive || (i > 0 && ds.has(i - 1)) || i === 0;
+            const cls = [
+              "lbtn",
+              isActive ? "active" : "",
+              isDone ? "done" : "",
+              !unlocked ? "locked" : "",
+            ]
+              .filter(Boolean)
+              .join(" ");
+            const onclick = unlocked ? `onclick="jumpLevel(${i})"` : "";
+            const icon = isDone ? "✓ " : !unlocked ? "🔒 " : "";
+            return `<button class="${cls}" ${onclick}>${icon}Soal ${l.id}</button>`;
+          })
+          .join("");
       }
+
+      function jumpLevel(idx) {
+        const ds = done[category];
+        /* boleh pindah hanya jika: soal 0, sudah selesai, atau soal sebelumnya selesai */
+        const unlocked = idx === 0 || ds.has(idx) || ds.has(idx - 1);
+        if (!unlocked) return;
+        currentIdx = idx;
+        loadLevel(idx);
+      }
+
+      function loadLevel(idx) {
+        currentIdx = idx;
+        const lvl = getCurrent();
+        document.getElementById("badge-num").textContent = lvl.id;
+        document.getElementById("lvl-title").textContent = lvl.title;
+        document.getElementById("lvl-tags").innerHTML = lvl.tags
+          .map((t) => `<span class="tag">${t}</span>`)
+          .join("");
+        document.getElementById("lvl-task").innerHTML = lvl.task;
+        const ed = document.getElementById("editor");
+        ed.value = lvl.starter;
+        ed.className = "code-ed";
+        clearOutput();
+        document.getElementById("success-bar").classList.remove("show");
+        document.getElementById("wrong-bar").classList.remove("show");
+        document.getElementById("btn-next").style.display = done[category].has(
+          idx,
+        )
+          ? "flex"
+          : "none";
+        renderStrip();
+        updateProgress();
+      }
+
+      function updateProgress() {
+        const total = getLevels().length,
+          n = done[category].size;
+        document.getElementById("prog-fill").style.width =
+          (total ? (n / total) * 100 : 0) + "%";
+        document.getElementById("prog-label").textContent =
+          `${n} / ${total} selesai`;
+      }
+
       function nextLevel() {
-        const t = TOPICS[currentTopic];
-        currentLevel++;
-        if (currentLevel >= t.levels.length) {
-          showComplete();
+        const lvls = getLevels();
+        if (currentIdx < lvls.length - 1) {
+          loadLevel(currentIdx + 1);
+          window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
-          loadLevel();
+          document.getElementById("success-bar").innerHTML =
+            `🏆 <strong>Semua soal ${category === "while" ? "while loop" : "do...while"} selesai!</strong> Pindah ke kategori lain atau ulangi soal favoritmu.`;
+          document.getElementById("success-bar").classList.add("show");
+          document.getElementById("btn-next").style.display = "none";
         }
       }
 
-      /* ═══════════════════════════════════════
-   LOAD LEVEL
-═══════════════════════════════════════ */
-      function loadLevel() {
-        const t = TOPICS[currentTopic];
-        const lv = t.levels[currentLevel];
-        const acc = t.accent;
+      /* ════════════════════════════════════════════
+   RUN
+════════════════════════════════════════════ */
+      function runCode() {
+        const code = document.getElementById("editor").value.trim();
+        if (!code) return;
 
-        document.getElementById("tb-topic").textContent = t.name;
-        document.getElementById("tb-level").textContent = lv.eyebrow;
+        document.getElementById("success-bar").classList.remove("show");
+        document.getElementById("wrong-bar").classList.remove("show");
 
-        // Progress dots
-        const dotsEl = document.getElementById("progress-dots");
-        dotsEl.innerHTML = "";
-        t.levels.forEach((_, i) => {
-          const d = document.createElement("div");
-          d.className = "dot";
-          if (i < currentLevel) d.classList.add("done-" + acc);
-          if (i === currentLevel) d.classList.add("active-" + acc);
-          dotsEl.appendChild(d);
-        });
-
-        document.getElementById("q-eyebrow").textContent = lv.eyebrow;
-        document.getElementById("q-story").textContent = lv.story;
-        document.getElementById("q-output").textContent = lv.output;
-
-        // Build editor lines
-        const body = document.getElementById("editor-body");
-        body.innerHTML = "";
-        let blankIdx = 0;
-
-        lv.lines.forEach((line, lineNum) => {
-          const row = document.createElement("div");
-          row.className = "code-line";
-
-          const numEl = document.createElement("span");
-          numEl.className = "line-num";
-          numEl.textContent = lineNum + 1;
-          row.appendChild(numEl);
-
-          const content = document.createElement("span");
-          content.className = "line-content";
-
-          line.code.forEach(([cls, text]) => {
-            if (cls === "blank") {
-              const wrap = document.createElement("span");
-              wrap.className = "blank-wrap";
-              const inp = document.createElement("input");
-              inp.type = "text";
-              inp.className = "blank-input";
-              inp.autocomplete = "off";
-              inp.spellcheck = false;
-              inp.placeholder = "?";
-              inp.dataset.idx = blankIdx++;
-              const expected = lv.answers[inp.dataset.idx] || "";
-              inp.style.width = Math.max(60, expected.length * 12 + 28) + "px";
-              inp.addEventListener("input", () =>
-                inp.classList.remove("correct", "wrong"),
-              );
-              inp.addEventListener("keydown", (e) => {
-                if (e.key === "Enter") checkAnswer();
-              });
-              wrap.appendChild(inp);
-              content.appendChild(wrap);
-            } else {
-              const span = document.createElement("span");
-              span.className = cls;
-              span.textContent = text;
-              content.appendChild(span);
-            }
+        if (code.includes("...")) {
+          showErr({
+            name: "IncompleteCode",
+            message: "Masih ada bagian <code>...</code> yang belum diisi.",
+            tip: "Ganti semua tanda ... dengan kode JavaScript yang sesuai.",
           });
+          setStatus("✗ kode belum lengkap");
+          return;
+        }
 
-          row.appendChild(content);
-          body.appendChild(row);
-        });
+        const outputs = [],
+          MAX = 300;
+        const sandbox = {
+          print: (...a) => {
+            outputs.push(a.map(String).join(" "));
+          },
+        };
+        const guarded = guardCode(code, MAX);
+        const ed = document.getElementById("editor");
 
-        hideFeedback();
-        document.getElementById("btn-check").style.display = "";
-        document.getElementById("btn-hint").style.display = "";
-        document.getElementById("btn-next").classList.remove("show");
+        try {
+          new Function(...Object.keys(sandbox), guarded)(
+            ...Object.values(sandbox),
+          );
+        } catch (e) {
+          ed.className = "code-ed bad";
+          showErr(fmtErr(e));
+          setStatus("✗ error");
+          return;
+        }
 
-        // Style check button per accent
-        const btnCheck = document.getElementById("btn-check");
-        btnCheck.className =
-          "btn btn-primary" + (acc === "mint" ? " mint-theme" : "");
+        if (!outputs.length) {
+          ed.className = "code-ed bad";
+          showErr({
+            name: "NoOutput",
+            message: "Tidak ada output yang dihasilkan.",
+            tip: "Pastikan kamu memanggil <code>print()</code> di dalam loop.",
+          });
+          setStatus("✗ tidak ada output");
+          return;
+        }
+
+        const lvl = getCurrent();
+
+        /* Tampilkan karakter dulu */
+        renderChars(outputs, lvl);
+
+        const passed = lvl.validate(outputs);
+
+        if (passed) {
+          ed.className = "code-ed ok";
+          setStatus(`✓ ${outputs.length} output — BENAR!`);
+          done[category].add(currentIdx);
+          document.getElementById("success-bar").innerHTML =
+            `✅ ${lvl.successMsg}`;
+          document.getElementById("success-bar").classList.add("show");
+          document.getElementById("wrong-bar").classList.remove("show");
+          document.getElementById("btn-next").style.display =
+            currentIdx < getLevels().length - 1 ? "flex" : "none";
+          renderStrip();
+          updateProgress();
+        } else {
+          ed.className = "code-ed bad";
+          setStatus(`✗ ${outputs.length} output — belum tepat`);
+          /* feedback spesifik: bandingkan output vs ekspektasi */
+          const wrongFeedback = buildWrongFeedback(outputs, lvl);
+          document.getElementById("wrong-bar").innerHTML = wrongFeedback;
+          document.getElementById("wrong-bar").classList.add("show");
+          document.getElementById("btn-next").style.display = "none";
+        }
       }
 
-      /* ═══════════════════════════════════════
-   ANSWER CHECKING
-═══════════════════════════════════════ */
-      function checkAnswer() {
-        const lv = TOPICS[currentTopic].levels[currentLevel];
-        const inputs = document.querySelectorAll(".blank-input");
-        let allCorrect = true;
+      function buildWrongFeedback(outputs, lvl) {
+        const got = outputs.length;
+        const expect = lvl.solution ? lvl.solution.length : "?";
 
-        inputs.forEach((inp) => {
-          const answer = lv.answers[parseInt(inp.dataset.idx)];
-          if (inp.value.trim() === answer) {
-            inp.classList.remove("wrong");
-            inp.classList.add("correct");
-          } else {
-            inp.classList.remove("correct");
-            inp.classList.add("wrong");
-            allCorrect = false;
+        /* cek jumlah */
+        if (got !== expect) {
+          return `❌ Output kamu: <strong>${got} baris</strong> — yang diharapkan: <strong>${expect} baris</strong>.<br>
+      Periksa nilai awal counter, kondisi loop, dan increment/decrement-mu.`;
+        }
+
+        /* jumlah benar, nilai salah */
+        const firstWrong = outputs.findIndex(
+          (v, i) => lvl.solution && Number(v) !== lvl.solution[i],
+        );
+        if (firstWrong !== -1 && lvl.solution) {
+          return `❌ Jumlah output sudah benar (${got} baris), tapi nilainya belum tepat.<br>
+      Output ke-${firstWrong + 1}: kamu menghasilkan <code>${outputs[firstWrong]}</code>, yang diharapkan <code>${lvl.solution[firstWrong]}</code>.<br>
+      Cek kembali nilai awal variabelmu.`;
+        }
+
+        return `❌ Output belum sesuai. Cek kembali kondisi dan nilai awal loop-mu.`;
+      }
+
+      function guardCode(code, max) {
+        const g = `if(typeof __lc__==='undefined'){var __lc__=0;}__lc__++;if(__lc__>${max}){throw new RangeError("Loop berjalan lebih dari ${max}x — kemungkinan infinite loop!");}`;
+        return code
+          .replace(/\bwhile\s*\([^)]*\)\s*\{/g, (m) => m + "\n" + g)
+          .replace(/\bdo\s*\{/g, (m) => m + "\n" + g);
+      }
+
+      function fmtErr(e) {
+        const msg = e.message || String(e);
+        let tip = "";
+        if (msg.includes("is not defined"))
+          tip = "Variabel belum dideklarasikan. Gunakan let atau var.";
+        else if (msg.includes("Unexpected") || e instanceof SyntaxError)
+          tip = "Periksa penulisan: kurung, kurawal, dan titik koma.";
+        else if (msg.includes("lebih dari"))
+          tip =
+            "Kondisi loop tidak pernah false — pastikan nilai counter berubah.";
+        return { name: e.name || "Error", message: msg, tip };
+      }
+
+      /* ════════════════════════════════════════════
+   OUTPUT RENDER
+════════════════════════════════════════════ */
+      function renderChars(outputs, lvl) {
+        const canvas = document.getElementById("out-canvas");
+        canvas.innerHTML = outputs
+          .map((val, idx) => {
+            const char = lvl.charFn(val, idx);
+            return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;animation:popIn .3s cubic-bezier(.34,1.56,.64,1) ${idx * 80}ms both">
+      ${char}
+      <span style="font-size:11px;font-family:var(--mono);color:var(--muted)">${lvl.label(val)}</span>
+    </div>`;
+          })
+          .join("");
+      }
+
+      function clearOutput() {
+        document.getElementById("out-canvas").innerHTML =
+          '<div class="empty-state">▷ karakter akan muncul di sini</div>';
+        setStatus("— tekan Run untuk melihat output");
+      }
+      function setStatus(s) {
+        document.getElementById("out-status").textContent = s;
+      }
+      function showErr(err) {
+        document.getElementById("out-canvas").innerHTML = `
+    <div class="err-panel">
+      <div class="err-name">⚠ ${err.name}</div>
+      <div>${err.message}</div>
+      ${err.tip ? `<div class="err-tip">💡 ${err.tip}</div>` : ""}
+    </div>`;
+      }
+
+      /* ════════════════════════════════════════════
+   CONTROLS
+════════════════════════════════════════════ */
+      function resetCode() {
+        const ed = document.getElementById("editor");
+        ed.value = getCurrent().starter;
+        ed.className = "code-ed";
+        clearOutput();
+        document.getElementById("success-bar").classList.remove("show");
+        document.getElementById("wrong-bar").classList.remove("show");
+      }
+
+      document
+        .getElementById("editor")
+        .addEventListener("keydown", function (e) {
+          if (e.key === "Tab") {
+            e.preventDefault();
+            const s = this.selectionStart,
+              end = this.selectionEnd;
+            this.value =
+              this.value.substring(0, s) + "  " + this.value.substring(end);
+            this.selectionStart = this.selectionEnd = s + 2;
+          }
+          if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+            e.preventDefault();
+            runCode();
           }
         });
 
-        if (allCorrect) {
-          showFeedback(
-            "ok",
-            "✅ <strong>Benar banget!</strong> Semua jawabanmu tepat. Lanjut ke level berikutnya!",
-          );
-          document.getElementById("btn-next").classList.add("show");
-          document.getElementById("btn-check").style.display = "none";
-          document.getElementById("btn-hint").style.display = "none";
-        } else {
-          showFeedback(
-            "err",
-            "❌ Ada yang salah nih. Coba cek lagi kotak yang berwarna merah!",
-          );
-        }
-      }
-
-      function showHint() {
-        const lv = TOPICS[currentTopic].levels[currentLevel];
-        showFeedback("hint", "💡 <strong>Hint:</strong> " + lv.hint);
-      }
-
-      function showFeedback(type, html) {
-        const fb = document.getElementById("feedback");
-        fb.className = "feedback show " + type;
-        document.getElementById("fb-text").innerHTML = html;
-      }
-      function hideFeedback() {
-        document.getElementById("feedback").className = "feedback";
-        document.getElementById("fb-text").innerHTML = "";
-      }
-
-      /* ═══════════════════════════════════════
-   COMPLETE SCREEN
-═══════════════════════════════════════ */
-      function showComplete() {
-        const t = TOPICS[currentTopic];
-        document.getElementById("c-title").textContent = "Selesai! 🎉";
-        document.getElementById("c-sub").textContent =
-          "Kamu sudah menyelesaikan semua level " +
-          t.name +
-          ". Kerja keras terbayar!";
-        document.getElementById("c-stars").textContent = "⭐⭐⭐⭐";
-        document.getElementById("btn-replay").textContent =
-          "🔁 Ulangi " + t.name;
-        show("complete");
-      }
+      /* BOOT */
+      renderStrip();
+      loadLevel(0);
     </script>
   </body>
 </html>
