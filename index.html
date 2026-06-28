@@ -3,28 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Loop Practice — While & Do While</title>
+    <title>Loop Garden</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
-        --bg: #0f0e17;
-        --surf: #1a1933;
-        --card: #22213a;
-        --bdr: #2e2d4d;
-        --coral: #ff6b6b;
-        --yel: #ffe66d;
-        --mint: #6bffb8;
-        --purp: #b48eff;
-        --blue: #6bcfff;
-        --txt: #fffffe;
-        --muted: #8f8bb0;
-        --err: #ff4d6d;
-        --ui: "Space Grotesk", sans-serif;
-        --mono: "JetBrains Mono", monospace;
-        --r: 10px;
+        --bg: #fff7f0;
+        --bg2: #ffeede;
+        --surf: #ffffff;
+        --card: #fff3ea;
+        --bdr: #ffd9c2;
+        --bdr-soft: #ffe6d6;
+        --peach: #ff9d76;
+        --coral: #ff8a8a;
+        --yel: #ffcb66;
+        --mint: #7fd8a8;
+        --purp: #c7a8f0;
+        --blue: #88c8f0;
+        --pink: #ffaecf;
+        --txt: #5a4a42;
+        --txt-soft: #7a6a60;
+        --muted: #b3a097;
+        --err: #ff7a8a;
+        --ui: "Baloo 2", cursive;
+        --body: "Nunito", sans-serif;
+        --mono: "Fira Code", monospace;
+        --r: 14px;
       }
       *,
       *::before,
@@ -35,151 +41,319 @@
       }
 
       body {
-        font-family: var(--ui);
+        font-family: var(--body);
         background: var(--bg);
+        background-image:
+          radial-gradient(
+            circle at 12% 18%,
+            rgba(255, 174, 207, 0.16) 0,
+            transparent 38%
+          ),
+          radial-gradient(
+            circle at 88% 12%,
+            rgba(136, 200, 240, 0.16) 0,
+            transparent 36%
+          ),
+          radial-gradient(
+            circle at 50% 95%,
+            rgba(199, 168, 240, 0.13) 0,
+            transparent 42%
+          );
+        background-attachment: fixed;
         color: var(--txt);
         padding: 0 12px 80px;
         min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      /* ── DEKORASI PEMANDANGAN ── */
+      /* lapisan langit + awan (fixed di belakang konten) */
+      .sky-deco {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .cloud {
+        position: absolute;
+        opacity: 0.85;
+        animation: drift linear infinite;
+      }
+      .cloud.c1 {
+        top: 60px;
+        left: -160px;
+        width: 130px;
+        animation-duration: 70s;
+      }
+      .cloud.c2 {
+        top: 140px;
+        left: -220px;
+        width: 90px;
+        animation-duration: 95s;
+        animation-delay: -30s;
+        opacity: 0.7;
+      }
+      .cloud.c3 {
+        top: 30px;
+        left: -200px;
+        width: 110px;
+        animation-duration: 110s;
+        animation-delay: -60s;
+        opacity: 0.6;
+      }
+      @keyframes drift {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(calc(100vw + 260px));
+        }
+      }
+
+      /* rerumputan + pepohonan menempel di dasar layar */
+      .ground-deco {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 150px;
+        z-index: -1;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .ground-deco svg {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      @media (max-width: 620px) {
+        .ground-deco {
+          height: 110px;
+        }
+      }
+
+      /* hiasan buah mengambang di sisi (dekoratif) */
+      .float-fruit {
+        position: fixed;
+        z-index: -1;
+        pointer-events: none;
+        opacity: 0.55;
+        animation: floaty 6s ease-in-out infinite;
+      }
+      .float-fruit.ff1 {
+        top: 180px;
+        left: 18px;
+        width: 46px;
+        animation-delay: 0s;
+      }
+      .float-fruit.ff2 {
+        top: 300px;
+        right: 22px;
+        width: 40px;
+        animation-delay: -2s;
+      }
+      .float-fruit.ff3 {
+        top: 460px;
+        left: 30px;
+        width: 38px;
+        animation-delay: -4s;
+      }
+      .float-fruit.ff4 {
+        top: 560px;
+        right: 28px;
+        width: 44px;
+        animation-delay: -1.5s;
+      }
+      @keyframes floaty {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-4deg);
+        }
+        50% {
+          transform: translateY(-14px) rotate(4deg);
+        }
+      }
+      @media (max-width: 880px) {
+        .float-fruit {
+          display: none;
+        }
+      }
+
+      /* keranjang buah di header */
+      .header-baskets {
+        max-width: 860px;
+        margin: 14px auto 0;
+        display: flex;
+        justify-content: center;
+        gap: 26px;
+        flex-wrap: wrap;
+      }
+      .header-baskets .basket-wrap {
+        animation: bob 3s ease-in-out infinite;
+      }
+      .header-baskets .basket-wrap:nth-child(2) {
+        animation-delay: -1s;
+      }
+      .header-baskets .basket-wrap:nth-child(3) {
+        animation-delay: -2s;
       }
 
       /* ── HEADER ── */
       .site-header {
         max-width: 860px;
         margin: 0 auto;
-        padding: 28px 0 10px;
+        padding: 30px 0 10px;
         text-align: center;
       }
       .eyebrow {
-        font-size: 11px;
+        font-family: var(--ui);
+        font-size: 12px;
         font-weight: 700;
-        letter-spacing: 3px;
+        letter-spacing: 2px;
         text-transform: uppercase;
-        color: var(--coral);
-        margin-bottom: 8px;
+        color: var(--peach);
+        margin-bottom: 4px;
       }
       .site-header h1 {
-        font-size: clamp(22px, 4vw, 34px);
-        font-weight: 700;
-        line-height: 1.2;
+        font-family: var(--ui);
+        font-size: clamp(26px, 4.5vw, 40px);
+        font-weight: 800;
+        line-height: 1.1;
+        color: var(--txt);
       }
       .site-header h1 em {
-        color: var(--yel);
+        color: var(--peach);
         font-style: normal;
       }
       .site-header p {
-        color: var(--muted);
-        font-size: 13px;
-        margin-top: 6px;
+        color: var(--txt-soft);
+        font-size: 14px;
+        font-weight: 600;
+        margin-top: 8px;
       }
 
       /* ── CATEGORY TABS ── */
       .cat-tabs {
         max-width: 860px;
-        margin: 20px auto 0;
+        margin: 22px auto 0;
         display: flex;
-        gap: 8px;
+        gap: 10px;
       }
       .cat-tab {
         flex: 1;
-        padding: 10px 0;
-        border: 2px solid var(--bdr);
+        padding: 12px 0;
+        border: 2.5px solid var(--bdr);
         border-radius: var(--r);
         background: var(--surf);
         color: var(--muted);
         font-family: var(--ui);
-        font-size: 14px;
-        font-weight: 600;
+        font-size: 15px;
+        font-weight: 700;
         cursor: pointer;
         transition: all 0.2s;
         text-align: center;
+        box-shadow: 0 3px 0 var(--bdr-soft);
       }
       .cat-tab:hover {
         border-color: var(--purp);
         color: var(--txt);
+        transform: translateY(-1px);
       }
       .cat-tab.active {
-        border-color: var(--coral);
-        color: var(--coral);
-        background: rgba(255, 107, 107, 0.08);
+        border-color: var(--peach);
+        color: var(--peach);
+        background: #fff1e8;
+        box-shadow: 0 3px 0 var(--bdr);
       }
 
       /* ── LEVEL STRIP ── */
       .level-strip {
         max-width: 860px;
-        margin: 12px auto 0;
+        margin: 14px auto 0;
         display: flex;
-        gap: 6px;
+        gap: 7px;
         flex-wrap: wrap;
       }
       .lbtn {
-        padding: 5px 15px;
+        padding: 6px 16px;
         border-radius: 99px;
-        border: 1.5px solid var(--bdr);
-        background: transparent;
+        border: 2px solid var(--bdr);
+        background: var(--surf);
         color: var(--muted);
         font-family: var(--ui);
-        font-size: 12px;
-        font-weight: 600;
+        font-size: 13px;
+        font-weight: 700;
         cursor: pointer;
         transition: all 0.2s;
       }
       .lbtn:hover {
         border-color: var(--purp);
         color: var(--txt);
+        transform: translateY(-1px);
       }
       .lbtn.active {
-        border-color: var(--coral);
-        color: var(--coral);
+        border-color: var(--peach);
+        color: var(--peach);
+        background: #fff1e8;
       }
       .lbtn.done {
         border-color: var(--mint);
-        color: var(--bg);
+        color: #fff;
         background: var(--mint);
       }
       .lbtn.locked {
-        border-color: var(--bdr);
-        color: #3d3b5c;
+        border-color: var(--bdr-soft);
+        color: #d8c8be;
         cursor: not-allowed;
-        opacity: 0.5;
+        opacity: 0.7;
+        background: var(--bg2);
       }
       .lbtn.locked:hover {
-        border-color: var(--bdr);
-        color: #3d3b5c;
+        border-color: var(--bdr-soft);
+        color: #d8c8be;
+        transform: none;
       }
 
       /* ── PROGRESS ── */
       .progress-row {
         max-width: 860px;
-        margin: 10px auto 0;
+        margin: 12px auto 0;
         display: flex;
         gap: 10px;
         align-items: center;
       }
       .prog-bar {
         flex: 1;
-        height: 5px;
-        background: var(--bdr);
+        height: 8px;
+        background: var(--bdr-soft);
         border-radius: 99px;
         overflow: hidden;
       }
       .prog-fill {
         height: 100%;
-        background: linear-gradient(90deg, var(--coral), var(--yel));
+        background: linear-gradient(90deg, var(--peach), var(--yel));
         transition: width 0.4s;
+        border-radius: 99px;
       }
       .prog-label {
-        font-size: 12px;
-        color: var(--muted);
+        font-family: var(--ui);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--txt-soft);
         white-space: nowrap;
       }
 
       /* ── MAIN 2-COL ── */
       .main-wrap {
         max-width: 860px;
-        margin: 14px auto 0;
+        margin: 16px auto 0;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 14px;
+        gap: 16px;
         align-items: start;
       }
       @media (max-width: 620px) {
@@ -191,34 +365,36 @@
       /* ── PANEL ── */
       .panel {
         background: var(--surf);
-        border: 1px solid var(--bdr);
-        border-radius: 12px;
+        border: 2.5px solid var(--bdr);
+        border-radius: 18px;
         overflow: hidden;
+        box-shadow: 0 4px 0 var(--bdr-soft);
       }
       .panel-head {
-        padding: 9px 13px;
-        border-bottom: 1px solid var(--bdr);
+        padding: 10px 14px;
+        border-bottom: 2px solid var(--bdr-soft);
         display: flex;
         align-items: center;
         gap: 7px;
+        background: var(--card);
       }
       .circles {
         display: flex;
         gap: 5px;
       }
       .c {
-        width: 9px;
-        height: 9px;
+        width: 11px;
+        height: 11px;
         border-radius: 50%;
       }
       .cr {
-        background: #ff5f57;
+        background: #ff8a8a;
       }
       .cy {
-        background: #febc2e;
+        background: #ffcb66;
       }
       .cg {
-        background: #28c840;
+        background: #7fd8a8;
       }
       .panel-head span {
         font-family: var(--mono);
@@ -229,33 +405,37 @@
 
       /* ── SOAL ── */
       .soal-body {
-        padding: 14px;
+        padding: 16px;
         display: flex;
         flex-direction: column;
-        gap: 11px;
+        gap: 12px;
       }
       .badge-row {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 11px;
       }
       .badge {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
         flex-shrink: 0;
-        background: linear-gradient(135deg, var(--coral), #ff9a6b);
+        background: linear-gradient(135deg, var(--peach), var(--yel));
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 700;
-        font-size: 14px;
+        font-family: var(--ui);
+        font-weight: 800;
+        font-size: 18px;
         color: #fff;
+        box-shadow: 0 3px 0 rgba(255, 157, 118, 0.4);
       }
       .level-meta h2 {
-        font-size: 15px;
-        font-weight: 600;
-        line-height: 1.3;
+        font-family: var(--ui);
+        font-size: 17px;
+        font-weight: 700;
+        line-height: 1.2;
+        color: var(--txt);
       }
       .tag-row {
         display: flex;
@@ -264,44 +444,56 @@
         flex-wrap: wrap;
       }
       .tag {
-        font-size: 10px;
+        font-family: var(--ui);
+        font-size: 11px;
         font-weight: 700;
-        padding: 2px 7px;
+        padding: 2px 9px;
         border-radius: 99px;
-        background: rgba(107, 207, 255, 0.12);
+        background: #eaf4fd;
         color: var(--blue);
-        letter-spacing: 0.5px;
       }
       .task-box {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid var(--bdr);
+        background: var(--card);
+        border: 2px solid var(--bdr-soft);
         border-radius: var(--r);
-        padding: 12px 14px;
-        font-size: 13.5px;
+        padding: 14px 16px;
+        font-size: 14px;
+        font-weight: 600;
         line-height: 1.75;
+        color: var(--txt-soft);
+      }
+      .task-box code {
+        background: #fff;
+        border: 1px solid var(--bdr);
+        padding: 1px 6px;
+        border-radius: 5px;
+        font-family: var(--mono);
+        font-size: 12.5px;
+        color: var(--peach);
       }
       .task-lbl {
-        font-size: 10px;
+        font-family: var(--ui);
+        font-size: 11px;
         font-weight: 700;
-        letter-spacing: 2px;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
         color: var(--yel);
-        margin-bottom: 6px;
+        margin-bottom: 7px;
       }
 
       /* ── EDITOR ── */
       .editor-body {
-        padding: 10px 12px 12px;
+        padding: 12px 14px 14px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 11px;
       }
       textarea.code-ed {
         width: 100%;
-        height: 190px;
-        padding: 12px;
+        height: 200px;
+        padding: 14px;
         background: var(--card);
-        border: 1.5px solid var(--bdr);
+        border: 2px solid var(--bdr);
         border-radius: var(--r);
         color: var(--txt);
         font-family: var(--mono);
@@ -314,26 +506,28 @@
         tab-size: 2;
       }
       textarea.code-ed:focus {
-        border-color: var(--coral);
+        border-color: var(--peach);
       }
       textarea.code-ed.ok {
         border-color: var(--mint);
+        background: #f3fcf7;
       }
       textarea.code-ed.bad {
         border-color: var(--err);
+        background: #fff4f5;
       }
       .btn-row {
         display: flex;
-        gap: 7px;
+        gap: 8px;
         flex-wrap: wrap;
         align-items: center;
       }
       .btn {
         font-family: var(--ui);
-        font-size: 13px;
-        font-weight: 600;
-        padding: 7px 18px;
-        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 700;
+        padding: 8px 20px;
+        border-radius: 10px;
         border: none;
         cursor: pointer;
         display: flex;
@@ -342,16 +536,22 @@
         transition: all 0.15s;
       }
       .btn-run {
-        background: var(--coral);
+        background: var(--peach);
         color: #fff;
+        box-shadow: 0 3px 0 #e8825f;
       }
       .btn-run:hover {
-        background: #f04f4f;
+        filter: brightness(1.05);
+        transform: translateY(-1px);
+      }
+      .btn-run:active {
+        transform: translateY(2px);
+        box-shadow: 0 1px 0 #e8825f;
       }
       .btn-reset {
-        background: transparent;
-        color: var(--muted);
-        border: 1.5px solid var(--bdr);
+        background: var(--surf);
+        color: var(--txt-soft);
+        border: 2px solid var(--bdr);
       }
       .btn-reset:hover {
         color: var(--txt);
@@ -359,11 +559,17 @@
       }
       .btn-next {
         background: var(--mint);
-        color: var(--bg);
+        color: #fff;
         margin-left: auto;
+        box-shadow: 0 3px 0 #5fc08c;
       }
       .btn-next:hover {
-        filter: brightness(1.1);
+        filter: brightness(1.05);
+        transform: translateY(-1px);
+      }
+      .btn-next:active {
+        transform: translateY(2px);
+        box-shadow: 0 1px 0 #5fc08c;
       }
       .shortcut-tip {
         font-size: 11px;
@@ -374,18 +580,20 @@
       /* ── OUTPUT AREA ── */
       .output-wrap {
         max-width: 860px;
-        margin: 14px auto 0;
+        margin: 16px auto 0;
         background: var(--surf);
-        border: 1px solid var(--bdr);
-        border-radius: 12px;
+        border: 2.5px solid var(--bdr);
+        border-radius: 18px;
         overflow: hidden;
+        box-shadow: 0 4px 0 var(--bdr-soft);
       }
       .output-head {
-        padding: 9px 13px;
-        border-bottom: 1px solid var(--bdr);
+        padding: 10px 14px;
+        border-bottom: 2px solid var(--bdr-soft);
         display: flex;
         align-items: center;
         gap: 7px;
+        background: var(--card);
       }
       .out-status {
         font-family: var(--mono);
@@ -394,34 +602,36 @@
         margin-left: 4px;
       }
       .output-canvas {
-        min-height: 160px;
-        padding: 16px 12px;
+        min-height: 170px;
+        padding: 18px 14px;
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 12px;
         align-items: flex-end;
         justify-content: flex-start;
         overflow-x: auto;
       }
       .empty-state {
-        color: var(--bdr);
-        font-size: 13px;
-        font-family: var(--mono);
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 600;
+        font-family: var(--ui);
         margin: auto;
       }
 
-      /* ── DOG SVG CARD ── */
-      .dog-card {
+      /* ── CHAR CARD ── */
+      .char-card {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 5px;
         animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
       }
-      .dog-card .dog-label {
-        font-size: 11px;
-        font-family: var(--mono);
-        color: var(--muted);
+      .char-card .char-label {
+        font-size: 12px;
+        font-family: var(--ui);
+        font-weight: 700;
+        color: var(--txt-soft);
       }
       @keyframes popIn {
         from {
@@ -433,39 +643,62 @@
           opacity: 1;
         }
       }
+      @keyframes bob {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-4px);
+        }
+      }
+      .char-card svg {
+        animation: bob 2.4s ease-in-out infinite;
+      }
 
       /* ── ERROR ── */
       .err-panel {
-        padding: 14px 16px;
+        padding: 16px 18px;
         font-family: var(--mono);
         font-size: 12.5px;
         color: var(--err);
         line-height: 1.8;
       }
       .err-panel .err-name {
-        font-size: 14px;
-        font-weight: 500;
+        font-family: var(--ui);
+        font-size: 15px;
+        font-weight: 700;
         margin-bottom: 3px;
       }
       .err-panel .err-tip {
-        color: #ff8fa3;
+        color: #d4677a;
         margin-top: 6px;
-        font-size: 12px;
-        font-family: var(--ui);
+        font-size: 12.5px;
+        font-weight: 600;
+        font-family: var(--body);
       }
 
       /* ── SUCCESS ── */
       .success-bar {
         display: none;
         max-width: 860px;
-        margin: 12px auto 0;
-        background: rgba(107, 255, 184, 0.08);
-        border: 1px solid rgba(107, 255, 184, 0.3);
+        margin: 14px auto 0;
+        background: #f0fbf5;
+        border: 2px solid #b8ecd0;
         border-radius: var(--r);
-        padding: 12px 16px;
-        font-size: 13.5px;
-        color: var(--mint);
+        padding: 14px 18px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #3fa873;
         line-height: 1.6;
+      }
+      .success-bar code {
+        background: #fff;
+        border: 1px solid #b8ecd0;
+        padding: 1px 6px;
+        border-radius: 5px;
+        font-family: var(--mono);
+        font-size: 12px;
       }
       .success-bar.show {
         display: block;
@@ -475,59 +708,294 @@
       .wrong-bar {
         display: none;
         max-width: 860px;
-        margin: 10px auto 0;
-        background: rgba(255, 77, 109, 0.07);
-        border: 1px solid rgba(255, 77, 109, 0.3);
+        margin: 12px auto 0;
+        background: #fff4f5;
+        border: 2px solid #ffd0d8;
         border-radius: var(--r);
-        padding: 11px 16px;
-        font-size: 13px;
-        color: #ff8fa3;
+        padding: 13px 18px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #d4677a;
         line-height: 1.6;
+      }
+      .wrong-bar code {
+        background: #fff;
+        border: 1px solid #ffd0d8;
+        padding: 1px 6px;
+        border-radius: 5px;
+        font-family: var(--mono);
+        font-size: 12px;
       }
       .wrong-bar.show {
         display: block;
       }
-
-      /* ── VALIDATION DETAIL inside output ── */
-      .val-detail {
-        padding: 12px 16px;
-        font-size: 13px;
-        line-height: 1.8;
-        border-top: 1px solid var(--bdr);
-      }
-      .val-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 4px;
-      }
-      .val-row .tick {
-        font-size: 14px;
-      }
-      .val-row .val-txt {
-        font-family: var(--mono);
-        font-size: 12px;
-        color: var(--muted);
-      }
     </style>
   </head>
   <body>
+    <!-- ░░ DEKORASI LANGIT & AWAN ░░ -->
+    <div class="sky-deco" aria-hidden="true">
+      <svg
+        class="cloud c1"
+        viewBox="0 0 120 60"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g fill="#ffffff">
+          <ellipse cx="40" cy="40" rx="34" ry="18" />
+          <circle cx="40" cy="30" r="20" />
+          <circle cx="65" cy="34" r="16" />
+          <circle cx="22" cy="36" r="14" />
+        </g>
+      </svg>
+      <svg
+        class="cloud c2"
+        viewBox="0 0 120 60"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g fill="#ffffff">
+          <ellipse cx="40" cy="40" rx="34" ry="18" />
+          <circle cx="40" cy="30" r="20" />
+          <circle cx="65" cy="34" r="16" />
+          <circle cx="22" cy="36" r="14" />
+        </g>
+      </svg>
+      <svg
+        class="cloud c3"
+        viewBox="0 0 120 60"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g fill="#ffffff">
+          <ellipse cx="40" cy="40" rx="34" ry="18" />
+          <circle cx="40" cy="30" r="20" />
+          <circle cx="65" cy="34" r="16" />
+          <circle cx="22" cy="36" r="14" />
+        </g>
+      </svg>
+    </div>
+
+    <!-- ░░ BUAH MENGAMBANG (SISI) ░░ -->
+    <svg
+      class="float-fruit ff1"
+      viewBox="0 0 74 86"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <ellipse
+        cx="42"
+        cy="20"
+        rx="8"
+        ry="4"
+        fill="#7fc88a"
+        transform="rotate(20 42 20)"
+      />
+      <circle cx="37" cy="52" r="28" fill="#ffb05c" />
+      <ellipse cx="26" cy="42" rx="5" ry="7" fill="#fff" opacity="0.3" />
+    </svg>
+    <svg
+      class="float-fruit ff2"
+      viewBox="0 0 74 86"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <ellipse
+        cx="48"
+        cy="11"
+        rx="7"
+        ry="4"
+        fill="#7fc88a"
+        transform="rotate(-20 48 11)"
+      />
+      <circle cx="26" cy="40" r="9" fill="#b88ae8" />
+      <circle cx="48" cy="40" r="9" fill="#b88ae8" />
+      <circle cx="37" cy="38" r="9" fill="#c79df0" />
+      <circle cx="37" cy="56" r="10" fill="#b88ae8" />
+    </svg>
+    <svg
+      class="float-fruit ff3"
+      viewBox="0 0 74 86"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M37 18 Q40 8 48 8"
+        fill="none"
+        stroke="#8a6a4a"
+        stroke-width="3.5"
+        stroke-linecap="round"
+      />
+      <ellipse
+        cx="50"
+        cy="14"
+        rx="9"
+        ry="5"
+        fill="#7fc88a"
+        transform="rotate(-20 50 14)"
+      />
+      <path
+        d="M37 22 C20 22 13 36 13 50 C13 68 26 80 37 80 C48 80 61 68 61 50 C61 36 54 22 37 22Z"
+        fill="#ff8a8a"
+      />
+      <ellipse
+        cx="26"
+        cy="40"
+        rx="5"
+        ry="8"
+        fill="#fff"
+        opacity="0.35"
+        transform="rotate(-20 26 40)"
+      />
+    </svg>
+    <svg
+      class="float-fruit ff4"
+      viewBox="0 0 74 86"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <ellipse
+        cx="42"
+        cy="20"
+        rx="8"
+        ry="4"
+        fill="#7fc88a"
+        transform="rotate(15 42 20)"
+      />
+      <ellipse cx="37" cy="52" rx="26" ry="30" fill="#ffd966" />
+      <ellipse cx="26" cy="44" rx="5" ry="8" fill="#fff" opacity="0.3" />
+    </svg>
+
     <header class="site-header">
       <p class="eyebrow">JavaScript Practice</p>
-      <h1>Loop Quest — <em>While</em> Edition</h1>
+      <h1><em>Loop Garden</em></h1>
       <p>
         Isi bagian
         <code
           style="
-            background: rgba(255, 255, 255, 0.07);
+            background: #fff;
+            border: 1px solid var(--bdr);
             padding: 1px 6px;
-            border-radius: 4px;
+            border-radius: 5px;
+            font-family: var(--mono);
             font-size: 12px;
+            color: var(--peach);
           "
           >...</code
         >
-        lalu klik Run — lihat hasilnya sebagai gambar!
+        lalu klik Run — lihat hasilnya sebagai gambar lucu!
       </p>
+      <div class="header-baskets" aria-hidden="true">
+        <div class="basket-wrap">
+          <svg
+            width="78"
+            height="64"
+            viewBox="0 0 78 64"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <!-- buah dalam keranjang -->
+            <circle cx="28" cy="26" r="11" fill="#ff8a8a" />
+            <ellipse
+              cx="28"
+              cy="16"
+              rx="5"
+              ry="3"
+              fill="#7fc88a"
+              transform="rotate(-15 28 16)"
+            />
+            <circle cx="48" cy="24" r="11" fill="#ffb05c" />
+            <circle cx="39" cy="30" r="10" fill="#ffd966" />
+            <circle cx="58" cy="30" r="9" fill="#b88ae8" />
+            <circle cx="20" cy="32" r="9" fill="#a8d86a" />
+            <!-- keranjang -->
+            <path
+              d="M8 34 L70 34 L63 60 Q62 62 60 62 L18 62 Q16 62 15 60 Z"
+              fill="#d9a05c"
+            />
+            <path d="M8 34 L70 34 L68 41 L10 41 Z" fill="#b9803c" />
+            <g stroke="#a06a2c" stroke-width="2.2" opacity="0.6">
+              <line x1="24" y1="41" x2="22" y2="60" />
+              <line x1="39" y1="41" x2="39" y2="60" />
+              <line x1="54" y1="41" x2="56" y2="60" />
+            </g>
+            <rect x="6" y="32" width="66" height="5" rx="2.5" fill="#c98f4c" />
+          </svg>
+        </div>
+        <div class="basket-wrap">
+          <svg
+            width="78"
+            height="64"
+            viewBox="0 0 78 64"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <!-- semangka slice -->
+            <path
+              d="M14 36 A26 26 0 0 1 64 36 Z"
+              fill="#5fb86a"
+              transform="translate(0 -2)"
+            />
+            <path
+              d="M17 36 A23 23 0 0 1 61 36 Z"
+              fill="#fff"
+              opacity="0.9"
+              transform="translate(0 -2)"
+            />
+            <path
+              d="M20 36 A20 20 0 0 1 58 36 Z"
+              fill="#ff8a8a"
+              transform="translate(0 -2)"
+            />
+            <!-- stroberi -->
+            <path
+              d="M50 18 C42 18 41 28 46 36 L56 36 C61 28 60 18 50 18Z"
+              fill="#ff7a9c"
+            />
+            <polygon points="50,12 45,20 55,20" fill="#7fc88a" />
+            <!-- keranjang -->
+            <path
+              d="M8 34 L70 34 L63 60 Q62 62 60 62 L18 62 Q16 62 15 60 Z"
+              fill="#d9a05c"
+            />
+            <path d="M8 34 L70 34 L68 41 L10 41 Z" fill="#b9803c" />
+            <g stroke="#a06a2c" stroke-width="2.2" opacity="0.6">
+              <line x1="24" y1="41" x2="22" y2="60" />
+              <line x1="39" y1="41" x2="39" y2="60" />
+              <line x1="54" y1="41" x2="56" y2="60" />
+            </g>
+            <rect x="6" y="32" width="66" height="5" rx="2.5" fill="#c98f4c" />
+          </svg>
+        </div>
+        <div class="basket-wrap">
+          <svg
+            width="78"
+            height="64"
+            viewBox="0 0 78 64"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <!-- pir & persik & lemon -->
+            <ellipse cx="26" cy="26" rx="10" ry="13" fill="#a8d86a" />
+            <circle cx="46" cy="26" r="11" fill="#ffb38a" />
+            <ellipse cx="60" cy="28" rx="9" ry="11" fill="#ffd966" />
+            <ellipse cx="14" cy="30" rx="7" ry="9" fill="#ffb38a" />
+            <ellipse
+              cx="36"
+              cy="18"
+              rx="5"
+              ry="3"
+              fill="#7fc88a"
+              transform="rotate(20 36 18)"
+            />
+            <!-- keranjang -->
+            <path
+              d="M8 34 L70 34 L63 60 Q62 62 60 62 L18 62 Q16 62 15 60 Z"
+              fill="#d9a05c"
+            />
+            <path d="M8 34 L70 34 L68 41 L10 41 Z" fill="#b9803c" />
+            <g stroke="#a06a2c" stroke-width="2.2" opacity="0.6">
+              <line x1="24" y1="41" x2="22" y2="60" />
+              <line x1="39" y1="41" x2="39" y2="60" />
+              <line x1="54" y1="41" x2="56" y2="60" />
+            </g>
+            <rect x="6" y="32" width="66" height="5" rx="2.5" fill="#c98f4c" />
+          </svg>
+        </div>
+      </div>
     </header>
 
     <div class="cat-tabs">
@@ -622,93 +1090,8 @@
 
     <script>
       /* ════════════════════════════════════════════
-   SVG KARAKTER — anjing & kucing kartun
+   SVG KARAKTER — buah-buahan kartun
 ════════════════════════════════════════════ */
-
-      /* Anjing kartun — warna bisa dikustomisasi */
-      function svgDog(color = "#e8a87c", delay = 0) {
-        const c = color;
-        const d = `style="animation-delay:${delay}ms"`;
-        return `<div class="dog-card" ${d}>
-<svg width="72" height="88" viewBox="0 0 72 88" xmlns="http://www.w3.org/2000/svg">
-  <!-- telinga kiri -->
-  <ellipse cx="18" cy="28" rx="11" ry="16" fill="${darken(c)}" transform="rotate(-18 18 28)"/>
-  <!-- telinga kanan -->
-  <ellipse cx="54" cy="28" rx="11" ry="16" fill="${darken(c)}" transform="rotate(18 54 28)"/>
-  <!-- kepala -->
-  <ellipse cx="36" cy="34" rx="24" ry="22" fill="${c}"/>
-  <!-- moncong -->
-  <ellipse cx="36" cy="46" rx="13" ry="9" fill="${lighten(c)}"/>
-  <!-- mata kiri -->
-  <circle cx="26" cy="30" r="5" fill="#1a1a2e"/>
-  <circle cx="27.5" cy="28.5" r="1.5" fill="#fff"/>
-  <!-- mata kanan -->
-  <circle cx="46" cy="30" r="5" fill="#1a1a2e"/>
-  <circle cx="47.5" cy="28.5" r="1.5" fill="#fff"/>
-  <!-- hidung -->
-  <ellipse cx="36" cy="43" rx="4.5" ry="3" fill="#1a1a2e"/>
-  <circle cx="35" cy="42.5" r="1" fill="#555"/>
-  <!-- mulut -->
-  <path d="M31 48 Q36 53 41 48" fill="none" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round"/>
-  <!-- badan -->
-  <rect x="16" y="54" width="40" height="28" rx="14" fill="${c}"/>
-  <!-- ekor -->
-  <path d="M56 64 Q72 52 68 44" fill="none" stroke="${darken(c)}" stroke-width="5" stroke-linecap="round"/>
-  <!-- kaki kiri -->
-  <rect x="19" y="76" width="11" height="10" rx="5" fill="${darken(c)}"/>
-  <!-- kaki kanan -->
-  <rect x="42" y="76" width="11" height="10" rx="5" fill="${darken(c)}"/>
-</svg>
-</div>`;
-      }
-
-      /* Kucing kartun — untuk variasi di beberapa soal */
-      function svgCat(color = "#c9b8e8", delay = 0) {
-        const c = color;
-        const d = `style="animation-delay:${delay}ms"`;
-        return `<div class="dog-card" ${d}>
-<svg width="72" height="88" viewBox="0 0 72 88" xmlns="http://www.w3.org/2000/svg">
-  <!-- telinga kiri (lancip) -->
-  <polygon points="12,30 20,8 30,28" fill="${darken(c)}"/>
-  <!-- telinga kanan (lancip) -->
-  <polygon points="60,30 52,8 42,28" fill="${darken(c)}"/>
-  <!-- telinga dalam kiri -->
-  <polygon points="15,29 21,14 28,28" fill="#ffb8c8"/>
-  <!-- telinga dalam kanan -->
-  <polygon points="57,29 51,14 44,28" fill="#ffb8c8"/>
-  <!-- kepala -->
-  <ellipse cx="36" cy="34" rx="24" ry="22" fill="${c}"/>
-  <!-- moncong -->
-  <ellipse cx="36" cy="46" rx="11" ry="7" fill="${lighten(c)}"/>
-  <!-- mata kiri -->
-  <ellipse cx="26" cy="30" rx="5" ry="5.5" fill="#1a1a2e"/>
-  <ellipse cx="26" cy="29" rx="2" ry="3" fill="#2e8b57"/>
-  <circle cx="27" cy="28" r="1.2" fill="#fff"/>
-  <!-- mata kanan -->
-  <ellipse cx="46" cy="30" rx="5" ry="5.5" fill="#1a1a2e"/>
-  <ellipse cx="46" cy="29" rx="2" ry="3" fill="#2e8b57"/>
-  <circle cx="47" cy="28" r="1.2" fill="#fff"/>
-  <!-- hidung -->
-  <polygon points="36,41 33.5,44 38.5,44" fill="#ff9eb5"/>
-  <!-- mulut -->
-  <path d="M33,44 Q36,49 39,44" fill="none" stroke="#1a1a2e" stroke-width="1.2" stroke-linecap="round"/>
-  <!-- kumis kiri -->
-  <line x1="24" y1="44" x2="10" y2="42" stroke="#aaa" stroke-width="1"/>
-  <line x1="24" y1="46" x2="9"  y2="47" stroke="#aaa" stroke-width="1"/>
-  <!-- kumis kanan -->
-  <line x1="48" y1="44" x2="62" y2="42" stroke="#aaa" stroke-width="1"/>
-  <line x1="48" y1="46" x2="63" y2="47" stroke="#aaa" stroke-width="1"/>
-  <!-- badan -->
-  <rect x="16" y="54" width="40" height="28" rx="14" fill="${c}"/>
-  <!-- ekor melengkung -->
-  <path d="M56 70 Q76 58 70 42 Q68 38 64 42" fill="none" stroke="${darken(c)}" stroke-width="5" stroke-linecap="round"/>
-  <!-- kaki kiri -->
-  <rect x="19" y="76" width="11" height="10" rx="5" fill="${darken(c)}"/>
-  <!-- kaki kanan -->
-  <rect x="42" y="76" width="11" height="10" rx="5" fill="${darken(c)}"/>
-</svg>
-</div>`;
-      }
 
       /* helper warna sederhana */
       function darken(hex) {
@@ -721,26 +1104,184 @@
       }
       function hexToRgb(hex) {
         const m = hex.replace("#", "").match(/.{2}/g);
-        return m ? m.map((x) => parseInt(x, 16)) : [200, 160, 100];
+        return m ? m.map((x) => parseInt(x, 16)) : [255, 200, 150];
       }
 
-      /* palet warna anjing per iterasi */
-      const DOG_COLORS = [
-        "#e8a87c",
-        "#f5c58a",
-        "#c8a06a",
-        "#e8c4a0",
-        "#d4936a",
-        "#f0b090",
+      /* wajah lucu standar (mata + pipi + senyum) */
+      function face(cx, cy, eyeColor = "#5a4a42") {
+        return `
+  <circle cx="${cx - 8}" cy="${cy}" r="3.2" fill="${eyeColor}"/>
+  <circle cx="${cx - 7}" cy="${cy - 1}" r="1" fill="#fff"/>
+  <circle cx="${cx + 8}" cy="${cy}" r="3.2" fill="${eyeColor}"/>
+  <circle cx="${cx + 9}" cy="${cy - 1}" r="1" fill="#fff"/>
+  <ellipse cx="${cx - 12}" cy="${cy + 5}" rx="3" ry="2" fill="#ff9eb5" opacity="0.55"/>
+  <ellipse cx="${cx + 12}" cy="${cy + 5}" rx="3" ry="2" fill="#ff9eb5" opacity="0.55"/>
+  <path d="M${cx - 5} ${cy + 5} Q${cx} ${cy + 10} ${cx + 5} ${cy + 5}" fill="none" stroke="${eyeColor}" stroke-width="1.6" stroke-linecap="round"/>`;
+      }
+
+      /* 🍎 Apel */
+      function svgApple(color = "#ff8a8a", delay = 0) {
+        const c = color;
+        return `<div class="char-card" style="animation-delay:${delay}ms">
+<svg width="74" height="86" viewBox="0 0 74 86" xmlns="http://www.w3.org/2000/svg">
+  <path d="M37 18 Q40 8 48 8" fill="none" stroke="#8a6a4a" stroke-width="3.5" stroke-linecap="round"/>
+  <ellipse cx="50" cy="14" rx="9" ry="5" fill="#7fc88a" transform="rotate(-20 50 14)"/>
+  <path d="M37 22 C20 22 13 36 13 50 C13 68 26 80 37 80 C48 80 61 68 61 50 C61 36 54 22 37 22Z" fill="${c}"/>
+  <path d="M37 22 C30 22 25 30 25 30 C28 27 33 26 37 26Z" fill="${lighten(c)}" opacity="0.7"/>
+  <ellipse cx="26" cy="40" rx="5" ry="8" fill="#fff" opacity="0.35" transform="rotate(-20 26 40)"/>
+  ${face(37, 52)}
+</svg>
+</div>`;
+      }
+
+      /* 🍊 Jeruk */
+      function svgOrange(color = "#ffb05c", delay = 0) {
+        const c = color;
+        return `<div class="char-card" style="animation-delay:${delay}ms">
+<svg width="74" height="86" viewBox="0 0 74 86" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="34" cy="20" rx="7" ry="4" fill="#7fc88a" transform="rotate(-15 34 20)"/>
+  <ellipse cx="44" cy="20" rx="7" ry="4" fill="#6db97a" transform="rotate(15 44 20)"/>
+  <circle cx="37" cy="52" r="28" fill="${c}"/>
+  <circle cx="37" cy="52" r="28" fill="none" stroke="${darken(c)}" stroke-width="0.5" opacity="0.4"/>
+  <circle cx="28" cy="44" r="1.5" fill="${darken(c)}" opacity="0.45"/>
+  <circle cx="46" cy="46" r="1.5" fill="${darken(c)}" opacity="0.45"/>
+  <circle cx="50" cy="60" r="1.5" fill="${darken(c)}" opacity="0.45"/>
+  <ellipse cx="26" cy="42" rx="5" ry="7" fill="#fff" opacity="0.3"/>
+  ${face(37, 54)}
+</svg>
+</div>`;
+      }
+
+      /* 🍓 Stroberi */
+      function svgStrawberry(color = "#ff7a9c", delay = 0) {
+        const c = color;
+        return `<div class="char-card" style="animation-delay:${delay}ms">
+<svg width="74" height="86" viewBox="0 0 74 86" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="37,16 30,26 44,26" fill="#7fc88a"/>
+  <polygon points="28,22 24,32 38,28" fill="#6db97a"/>
+  <polygon points="46,22 50,32 36,28" fill="#6db97a"/>
+  <path d="M37 28 C18 28 15 44 22 60 C27 72 37 80 37 80 C37 80 47 72 52 60 C59 44 56 28 37 28Z" fill="${c}"/>
+  <circle cx="28" cy="46" r="1.3" fill="#fff3c4"/>
+  <circle cx="46" cy="46" r="1.3" fill="#fff3c4"/>
+  <circle cx="33" cy="58" r="1.3" fill="#fff3c4"/>
+  <circle cx="44" cy="58" r="1.3" fill="#fff3c4"/>
+  <circle cx="37" cy="68" r="1.3" fill="#fff3c4"/>
+  <ellipse cx="27" cy="44" rx="4" ry="6" fill="#fff" opacity="0.25"/>
+  ${face(37, 50, "#7a3a4a")}
+</svg>
+</div>`;
+      }
+
+      /* 🍇 Anggur */
+      function svgGrape(color = "#b88ae8", delay = 0) {
+        const c = color;
+        return `<div class="char-card" style="animation-delay:${delay}ms">
+<svg width="74" height="86" viewBox="0 0 74 86" xmlns="http://www.w3.org/2000/svg">
+  <path d="M37 14 Q40 8 47 9" fill="none" stroke="#8a6a4a" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="48" cy="11" rx="7" ry="4" fill="#7fc88a" transform="rotate(-20 48 11)"/>
+  <circle cx="26" cy="36" r="9" fill="${c}"/>
+  <circle cx="48" cy="36" r="9" fill="${c}"/>
+  <circle cx="37" cy="34" r="9" fill="${lighten(c)}"/>
+  <circle cx="20" cy="52" r="9" fill="${c}"/>
+  <circle cx="54" cy="52" r="9" fill="${c}"/>
+  <circle cx="37" cy="52" r="10" fill="${c}"/>
+  <circle cx="29" cy="68" r="9" fill="${c}"/>
+  <circle cx="45" cy="68" r="9" fill="${c}"/>
+  <circle cx="23" cy="32" r="2.5" fill="#fff" opacity="0.4"/>
+  ${face(37, 52, "#4a2a6a")}
+</svg>
+</div>`;
+      }
+
+      /* 🍋 Lemon */
+      function svgLemon(color = "#ffd966", delay = 0) {
+        const c = color;
+        return `<div class="char-card" style="animation-delay:${delay}ms">
+<svg width="74" height="86" viewBox="0 0 74 86" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="42" cy="20" rx="8" ry="4" fill="#7fc88a" transform="rotate(20 42 20)"/>
+  <ellipse cx="37" cy="52" rx="26" ry="30" fill="${c}"/>
+  <ellipse cx="37" cy="24" rx="4" ry="6" fill="${darken(c)}"/>
+  <ellipse cx="37" cy="80" rx="4" ry="6" fill="${darken(c)}"/>
+  <ellipse cx="26" cy="44" rx="5" ry="8" fill="#fff" opacity="0.3"/>
+  ${face(37, 52, "#a08020")}
+</svg>
+</div>`;
+      }
+
+      /* 🍐 Pir */
+      function svgPear(color = "#a8d86a", delay = 0) {
+        const c = color;
+        return `<div class="char-card" style="animation-delay:${delay}ms">
+<svg width="74" height="86" viewBox="0 0 74 86" xmlns="http://www.w3.org/2000/svg">
+  <path d="M37 16 Q39 9 45 9" fill="none" stroke="#8a6a4a" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="46" cy="12" rx="7" ry="4" fill="#7fc88a" transform="rotate(-18 46 12)"/>
+  <path d="M37 22 C30 22 28 32 30 40 C20 46 18 60 24 70 C30 80 44 80 50 70 C56 60 54 46 44 40 C46 32 44 22 37 22Z" fill="${c}"/>
+  <ellipse cx="28" cy="56" rx="5" ry="8" fill="#fff" opacity="0.3"/>
+  ${face(37, 58, "#5a7a2a")}
+</svg>
+</div>`;
+      }
+
+      /* 🍑 Persik */
+      function svgPeach(color = "#ffb38a", delay = 0) {
+        const c = color;
+        return `<div class="char-card" style="animation-delay:${delay}ms">
+<svg width="74" height="86" viewBox="0 0 74 86" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="42" cy="20" rx="8" ry="4.5" fill="#7fc88a" transform="rotate(20 42 20)"/>
+  <path d="M37 24 C18 24 13 42 13 54 C13 70 26 80 37 80 C48 80 61 70 61 54 C61 42 56 24 37 24Z" fill="${c}"/>
+  <path d="M37 26 C34 36 34 60 37 78" fill="none" stroke="${darken(c)}" stroke-width="1.5" opacity="0.5"/>
+  <ellipse cx="26" cy="44" rx="5" ry="8" fill="#fff" opacity="0.3"/>
+  ${face(37, 54, "#9a5a3a")}
+</svg>
+</div>`;
+      }
+
+      /* 🍉 Semangka (slice) */
+      function svgWatermelon(color = "#ff8a8a", delay = 0) {
+        const c = color;
+        return `<div class="char-card" style="animation-delay:${delay}ms">
+<svg width="74" height="86" viewBox="0 0 74 86" xmlns="http://www.w3.org/2000/svg">
+  <path d="M10 30 A40 40 0 0 0 64 30 Z" fill="#5fb86a"/>
+  <path d="M13 32 A36 36 0 0 0 61 32 Z" fill="#fff" opacity="0.85"/>
+  <path d="M16 34 A33 33 0 0 0 58 34 Z" fill="${c}"/>
+  <ellipse cx="30" cy="44" rx="1.6" ry="2.4" fill="#3a2a2a"/>
+  <ellipse cx="44" cy="44" rx="1.6" ry="2.4" fill="#3a2a2a"/>
+  <ellipse cx="37" cy="52" rx="1.6" ry="2.4" fill="#3a2a2a"/>
+  ${face(37, 44, "#7a3a3a")}
+</svg>
+</div>`;
+      }
+
+      /* palet & set buah per iterasi */
+      const APPLE_COLORS = ["#ff8a8a", "#ff7a7a", "#ffb05c", "#ff9d6c"];
+      const ORANGE_COLORS = ["#ffb05c", "#ffa04c", "#ffc266", "#ff9d4c"];
+
+      /* daftar generator buah untuk variasi acak-stabil */
+      const FRUITS = [
+        (col, d) => svgApple(col, d),
+        (col, d) => svgOrange(col, d),
+        (col, d) => svgStrawberry(col, d),
+        (col, d) => svgGrape(col, d),
+        (col, d) => svgLemon(col, d),
+        (col, d) => svgPear(col, d),
+        (col, d) => svgPeach(col, d),
+        (col, d) => svgWatermelon(col, d),
       ];
-      const CAT_COLORS = [
-        "#c9b8e8",
-        "#b8d4e8",
-        "#e8c9d4",
-        "#d4e8c9",
-        "#e8d4b8",
-        "#c4c9e8",
+      /* warna default tiap generator (dipakai saat dirotasi) */
+      const FRUIT_DEFAULT = [
+        "#ff8a8a",
+        "#ffb05c",
+        "#ff7a9c",
+        "#b88ae8",
+        "#ffd966",
+        "#a8d86a",
+        "#ffb38a",
+        "#ff8a8a",
       ];
+      function fruitByIdx(idx, delay) {
+        const k = idx % FRUITS.length;
+        return FRUITS[k](FRUIT_DEFAULT[k], delay);
+      }
 
       /* ════════════════════════════════════════════
    LEVEL DATA
@@ -748,11 +1289,11 @@
       const WHILE_LEVELS = [
         {
           id: 1,
-          title: "Panggil Anjing!",
+          title: "Petik Apel!",
           tags: ["while", "counter naik"],
           task: `Buat while loop yang berjalan <strong>4 kali</strong>.<br>
       Setiap iterasi, panggil <code>print(i)</code>.<br>
-      Output yang diharapkan: angka <strong>1, 2, 3, 4</strong> — dan lihat 4 anjing muncul!`,
+      Output yang diharapkan: angka <strong>1, 2, 3, 4</strong> — dan lihat 4 apel muncul!`,
           starter: `let i = ...;
 
 while (i ... 4) {
@@ -760,21 +1301,21 @@ while (i ... 4) {
   i++;
 }`,
           charFn: (val, idx) =>
-            svgDog(DOG_COLORS[idx % DOG_COLORS.length], idx * 80),
+            svgApple(APPLE_COLORS[idx % APPLE_COLORS.length], idx * 80),
           label: (val) => val,
           validate(out) {
             return out.length === 4 && out.every((v, i) => Number(v) === i + 1);
           },
           successMsg:
-            "🐶 4 anjing muncul! Loop berjalan 4x — variabel <code>i</code> naik dari 1 sampai 4, berhenti saat kondisi tidak terpenuhi lagi.",
+            "🍎 4 apel muncul! Loop berjalan 4x — variabel <code>i</code> naik dari 1 sampai 4, berhenti saat kondisi tidak terpenuhi lagi.",
           solution: [1, 2, 3, 4],
         },
         {
           id: 2,
-          title: "Lebih Banyak Kucing",
+          title: "Lebih Banyak Jeruk",
           tags: ["while", "kondisi ≤"],
           task: `Buat while loop yang menampilkan angka <strong>1 sampai 6</strong>.<br>
-      Lihat berapa banyak kucing yang muncul!<br>
+      Lihat berapa banyak jeruk yang muncul!<br>
       Perhatikan kondisi yang tepat agar tidak kurang atau lebih.`,
           starter: `let i = ...;
 
@@ -783,20 +1324,20 @@ while (i ... ...) {
   i++;
 }`,
           charFn: (val, idx) =>
-            svgCat(CAT_COLORS[idx % CAT_COLORS.length], idx * 60),
+            svgOrange(ORANGE_COLORS[idx % ORANGE_COLORS.length], idx * 60),
           label: (val) => val,
           validate(out) {
             return out.length === 6 && out.every((v, i) => Number(v) === i + 1);
           },
           successMsg:
-            "🐱 6 kucing berhasil! Kondisi <code>i &lt;= 6</code> memastikan loop jalan sampai angka 6 inklusif.",
+            "🍊 6 jeruk berhasil! Kondisi <code>i &lt;= 6</code> memastikan loop jalan sampai angka 6 inklusif.",
           solution: [1, 2, 3, 4, 5, 6],
         },
         {
           id: 3,
-          title: "Hitung Mundur Anjing",
+          title: "Hitung Mundur Stroberi",
           tags: ["while", "counter turun"],
-          task: `Anjing-anjing pergi pulang! Buat while loop yang menampilkan angka <strong>5 sampai 1</strong> (hitung mundur).<br>
+          task: `Stroberi-stroberi habis dimakan! Buat while loop yang menampilkan angka <strong>5 sampai 1</strong> (hitung mundur).<br>
       Gunakan kondisi dan cara decrement yang sesuai.`,
           starter: `let i = ...;
 
@@ -804,15 +1345,58 @@ while (i ... 1) {
   print(i);
   i...;
 }`,
-          charFn: (val, idx) =>
-            svgDog(DOG_COLORS[(5 - idx) % DOG_COLORS.length], idx * 70),
+          charFn: (val, idx) => svgStrawberry("#ff7a9c", idx * 70),
           label: (val) => val,
           validate(out) {
             return out.length === 5 && out.every((v, i) => Number(v) === 5 - i);
           },
           successMsg:
-            "🐶 Loop mundur berhasil! Kondisi <code>i &gt;= 1</code> dan <code>i--</code> membuat counter turun setiap iterasi.",
+            "🍓 Loop mundur berhasil! Kondisi <code>i &gt;= 1</code> dan <code>i--</code> membuat counter turun setiap iterasi.",
           solution: [5, 4, 3, 2, 1],
+        },
+        {
+          id: 4,
+          title: "Anggur Genap Saja",
+          tags: ["while", "step +2", "genap"],
+          task: `Buat while loop yang menampilkan angka <strong>genap</strong>: <strong>2, 4, 6, 8</strong>.<br>
+      Mulai dari 2, dan setiap iterasi <em>tambah 2</em> (bukan 1) supaya melompati angka ganjil.`,
+          starter: `let i = ...;
+
+while (i ... 8) {
+  print(i);
+  i ... 2;
+}`,
+          charFn: (val, idx) => svgGrape("#b88ae8", idx * 75),
+          label: (val) => val,
+          validate(out) {
+            return (
+              out.length === 4 && out.every((v, i) => Number(v) === 2 + i * 2)
+            );
+          },
+          successMsg:
+            "🍇 Mantap! Dengan <code>i += 2</code>, counter naik dua langkah tiap iterasi sehingga hanya angka genap yang muncul: 2, 4, 6, 8.",
+          solution: [2, 4, 6, 8],
+        },
+        {
+          id: 5,
+          title: "Keranjang Buah Campur",
+          tags: ["while", "1 → 7", "tantangan"],
+          task: `Tantangan terakhir! Buat while loop yang menampilkan angka <strong>1 sampai 7</strong>.<br>
+      Setiap angka memunculkan buah yang berbeda-beda. Pastikan jumlah dan urutannya pas!`,
+          starter: `let i = ...;
+
+while (i ... 7) {
+  print(i);
+  i++;
+}`,
+          charFn: (val, idx) => fruitByIdx(idx, idx * 60),
+          label: (val) => val,
+          validate(out) {
+            return out.length === 7 && out.every((v, i) => Number(v) === i + 1);
+          },
+          successMsg:
+            "🧺 Keranjang penuh! 7 buah berbeda muncul karena loop berjalan 7x dari 1 sampai 7. Kamu sudah menguasai while loop!",
+          solution: [1, 2, 3, 4, 5, 6, 7],
         },
       ];
 
@@ -831,20 +1415,20 @@ do {
 } while (i ... 3);`,
           solution: [1, 2, 3],
           charFn: (val, idx) =>
-            svgDog(DOG_COLORS[idx % DOG_COLORS.length], idx * 90),
+            svgApple(APPLE_COLORS[idx % APPLE_COLORS.length], idx * 90),
           label: (val) => val,
           validate(out) {
             return out.length === 3 && out.every((v, i) => Number(v) === i + 1);
           },
           successMsg:
-            "do...while berjalan 3x! Blok <code>do</code> pasti dijalankan minimal 1 kali sebelum kondisi diperiksa.",
+            "🍎 do...while berjalan 3x! Blok <code>do</code> pasti dijalankan minimal 1 kali sebelum kondisi diperiksa.",
         },
         {
           id: 2,
           title: "Tetap Jalan Sekali!",
           tags: ["do...while", "kondisi false dari awal"],
           task: `Ini soal konsep penting! Variabel <code>x</code> mulai dari <strong>10</strong>, kondisi <code>x &lt; 5</code>.<br>
-      Kondisi sudah <em>false</em> sejak awal — tapi do...while tetap jalan. Berapa anjing yang muncul?`,
+      Kondisi sudah <em>false</em> sejak awal — tapi do...while tetap jalan. Berapa buah yang muncul?`,
           starter: `let x = ...;
 
 do {
@@ -852,20 +1436,20 @@ do {
   x++;
 } while (x < ...);`,
           solution: [10],
-          charFn: (val, idx) => svgDog("#e8a87c", 0),
+          charFn: (val, idx) => svgLemon("#ffd966", 0),
           label: (val) => val,
           validate(out) {
             return out.length === 1 && Number(out[0]) === 10;
           },
           successMsg:
-            "1 anjing! do...while TETAP jalan 1x meski kondisi sudah false dari awal. Ini perbedaan utamanya dengan while biasa.",
+            "🍋 1 buah! do...while TETAP jalan 1x meski kondisi sudah false dari awal. Ini perbedaan utamanya dengan while biasa.",
         },
         {
           id: 3,
-          title: "Campuran Anjing & Kucing",
+          title: "Pir & Persik Bergantian",
           tags: ["do...while", "counter", "variasi"],
           task: `Gunakan <strong>do...while</strong> untuk menampilkan angka <strong>1 sampai 5</strong>.<br>
-      Kali ini outputnya campuran anjing dan kucing bergantian!`,
+      Kali ini outputnya pir dan persik bergantian!`,
           starter: `let i = ...;
 
 do {
@@ -875,14 +1459,56 @@ do {
           solution: [1, 2, 3, 4, 5],
           charFn: (val, idx) =>
             idx % 2 === 0
-              ? svgDog(DOG_COLORS[idx % DOG_COLORS.length], idx * 70)
-              : svgCat(CAT_COLORS[idx % CAT_COLORS.length], idx * 70),
+              ? svgPear("#a8d86a", idx * 70)
+              : svgPeach("#ffb38a", idx * 70),
           label: (val) => val,
           validate(out) {
             return out.length === 5 && out.every((v, i) => Number(v) === i + 1);
           },
           successMsg:
-            "do...while berjalan 5x — hasilnya anjing dan kucing bergantian sesuai jumlah iterasi.",
+            "🍐🍑 do...while berjalan 5x — hasilnya pir dan persik bergantian sesuai jumlah iterasi.",
+        },
+        {
+          id: 4,
+          title: "Semangka Mundur",
+          tags: ["do...while", "counter turun"],
+          task: `Gunakan <strong>do...while</strong> untuk hitung mundur dari <strong>4 sampai 1</strong>.<br>
+      Blok <code>do</code> jalan dulu, lalu kondisi <code>i &gt;= 1</code> dicek. Jangan lupa <code>i--</code>.`,
+          starter: `let i = ...;
+
+do {
+  print(i);
+  i...;
+} while (i ... 1);`,
+          solution: [4, 3, 2, 1],
+          charFn: (val, idx) => svgWatermelon("#ff8a8a", idx * 80),
+          label: (val) => val,
+          validate(out) {
+            return out.length === 4 && out.every((v, i) => Number(v) === 4 - i);
+          },
+          successMsg:
+            "🍉 Hitung mundur berhasil! do...while juga bisa turun: <code>i--</code> tiap iterasi dan berhenti saat <code>i &gt;= 1</code> jadi false.",
+        },
+        {
+          id: 5,
+          title: "Panen Besar Buah",
+          tags: ["do...while", "1 → 6", "tantangan"],
+          task: `Tantangan penutup! Gunakan <strong>do...while</strong> untuk menampilkan angka <strong>1 sampai 6</strong>.<br>
+      Setiap angka memunculkan buah berbeda. Pastikan jumlah dan urutannya tepat!`,
+          starter: `let i = ...;
+
+do {
+  print(i);
+  i++;
+} while (i ... 6);`,
+          solution: [1, 2, 3, 4, 5, 6],
+          charFn: (val, idx) => fruitByIdx(idx, idx * 60),
+          label: (val) => val,
+          validate(out) {
+            return out.length === 6 && out.every((v, i) => Number(v) === i + 1);
+          },
+          successMsg:
+            "🧺 Panen besar! 6 buah berbeda muncul — kamu sudah memahami do...while dengan baik. Selamat!",
         },
       ];
 
@@ -1128,7 +1754,7 @@ do {
             const char = lvl.charFn(val, idx);
             return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;animation:popIn .3s cubic-bezier(.34,1.56,.64,1) ${idx * 80}ms both">
       ${char}
-      <span style="font-size:11px;font-family:var(--mono);color:var(--muted)">${lvl.label(val)}</span>
+      <span style="font-size:12px;font-family:var(--ui);font-weight:700;color:var(--txt-soft)">${lvl.label(val)}</span>
     </div>`;
           })
           .join("");
@@ -1184,5 +1810,77 @@ do {
       renderStrip();
       loadLevel(0);
     </script>
+
+    <!-- ░░ TANAH, RUMPUT & POHON DI DASAR ░░ -->
+    <div class="ground-deco" aria-hidden="true">
+      <svg
+        viewBox="0 0 1200 150"
+        preserveAspectRatio="xMidYMax slice"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <!-- bukit rumput belakang -->
+        <path
+          d="M0 80 Q200 50 400 75 T800 70 T1200 78 L1200 150 L0 150 Z"
+          fill="#bfe89a"
+          opacity="0.7"
+        />
+        <!-- pohon kiri -->
+        <g transform="translate(120 18)">
+          <rect x="-7" y="60" width="14" height="50" rx="5" fill="#a06a3c" />
+          <circle cx="0" cy="45" r="34" fill="#7fc88a" />
+          <circle cx="-26" cy="58" r="24" fill="#8fd49a" />
+          <circle cx="26" cy="58" r="24" fill="#8fd49a" />
+          <circle cx="-10" cy="40" r="9" fill="#ff8a8a" />
+          <circle cx="14" cy="50" r="9" fill="#ff8a8a" />
+          <circle cx="0" cy="62" r="9" fill="#ff8a8a" />
+        </g>
+        <!-- pohon kanan -->
+        <g transform="translate(1060 22)">
+          <rect x="-8" y="58" width="16" height="56" rx="5" fill="#a06a3c" />
+          <circle cx="0" cy="42" r="38" fill="#8fd49a" />
+          <circle cx="-28" cy="56" r="26" fill="#7fc88a" />
+          <circle cx="28" cy="56" r="26" fill="#7fc88a" />
+          <circle cx="-12" cy="40" r="9" fill="#ffb05c" />
+          <circle cx="16" cy="48" r="9" fill="#ffb05c" />
+          <circle cx="2" cy="60" r="9" fill="#ffb05c" />
+        </g>
+        <!-- pohon kecil tengah -->
+        <g transform="translate(640 46)">
+          <rect x="-5" y="44" width="10" height="40" rx="4" fill="#b07a4c" />
+          <circle cx="0" cy="34" r="24" fill="#8fd49a" />
+          <circle cx="-16" cy="44" r="16" fill="#7fc88a" />
+          <circle cx="16" cy="44" r="16" fill="#7fc88a" />
+          <circle cx="-6" cy="34" r="7" fill="#b88ae8" />
+          <circle cx="10" cy="42" r="7" fill="#b88ae8" />
+        </g>
+        <!-- tanah rumput depan -->
+        <path
+          d="M0 100 Q300 78 600 96 T1200 98 L1200 150 L0 150 Z"
+          fill="#9bdc6f"
+        />
+        <!-- semak kecil -->
+        <g fill="#7fc88a">
+          <circle cx="300" cy="118" r="18" />
+          <circle cx="320" cy="122" r="14" />
+          <circle cx="284" cy="124" r="12" />
+        </g>
+        <g fill="#8fd49a">
+          <circle cx="880" cy="120" r="16" />
+          <circle cx="900" cy="124" r="12" />
+          <circle cx="864" cy="125" r="10" />
+        </g>
+        <!-- helai rumput -->
+        <g stroke="#6db957" stroke-width="3" stroke-linecap="round">
+          <path d="M180 150 Q178 134 184 126" fill="none" />
+          <path d="M188 150 Q190 136 196 130" fill="none" />
+          <path d="M460 150 Q458 136 464 128" fill="none" />
+          <path d="M468 150 Q470 138 476 132" fill="none" />
+          <path d="M740 150 Q738 134 744 126" fill="none" />
+          <path d="M748 150 Q750 138 756 132" fill="none" />
+          <path d="M1000 150 Q998 136 1004 128" fill="none" />
+          <path d="M1008 150 Q1010 138 1016 132" fill="none" />
+        </g>
+      </svg>
+    </div>
   </body>
 </html>
