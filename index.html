@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Loop Garden</title>
+    <title>Loop Quest — While & Do While</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap"
       rel="stylesheet"
@@ -200,6 +200,50 @@
       }
       .header-baskets .basket-wrap:nth-child(3) {
         animation-delay: -2s;
+      }
+
+      /* ── TOMBOL GANTI BAHASA ── */
+      .lang-toggle {
+        position: fixed;
+        top: 14px;
+        right: 14px;
+        z-index: 50;
+        display: flex;
+        background: var(--surf);
+        border: 2.5px solid var(--bdr);
+        border-radius: 99px;
+        padding: 3px;
+        box-shadow: 0 3px 0 var(--bdr-soft);
+      }
+      .lang-toggle button {
+        font-family: var(--ui);
+        font-size: 13px;
+        font-weight: 700;
+        padding: 5px 13px;
+        border: none;
+        border-radius: 99px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .lang-toggle button.active {
+        background: linear-gradient(135deg, var(--peach), var(--yel));
+        color: #fff;
+        box-shadow: 0 2px 0 rgba(255, 157, 118, 0.35);
+      }
+      .lang-toggle button:not(.active):hover {
+        color: var(--txt);
+      }
+      @media (max-width: 620px) {
+        .lang-toggle {
+          top: 10px;
+          right: 10px;
+        }
+        .lang-toggle button {
+          padding: 4px 10px;
+          font-size: 12px;
+        }
       }
 
       /* ── HEADER ── */
@@ -732,6 +776,12 @@
     </style>
   </head>
   <body>
+    <!-- ░░ TOMBOL GANTI BAHASA ░░ -->
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button id="lang-id" class="active" onclick="setLang('id')">ID</button>
+      <button id="lang-en" onclick="setLang('en')">EN</button>
+    </div>
+
     <!-- ░░ DEKORASI LANGIT & AWAN ░░ -->
     <div class="sky-deco" aria-hidden="true">
       <svg
@@ -863,9 +913,9 @@
     </svg>
 
     <header class="site-header">
-      <p class="eyebrow">JavaScript Practice</p>
-      <h1><em>Loop Garden</em></h1>
-      <p>
+      <p class="eyebrow" id="ui-eyebrow">JavaScript Practice</p>
+      <h1 id="ui-title">Loop Quest — <em>While</em> Edition</h1>
+      <p id="ui-desc">
         Isi bagian
         <code
           style="
@@ -999,10 +1049,14 @@
     </header>
 
     <div class="cat-tabs">
-      <button class="cat-tab active" onclick="setCategory('while')">
+      <button
+        class="cat-tab active"
+        id="tab-while"
+        onclick="setCategory('while')"
+      >
         ⟳ &nbsp;while loop
       </button>
-      <button class="cat-tab" onclick="setCategory('dowhile')">
+      <button class="cat-tab" id="tab-dowhile" onclick="setCategory('dowhile')">
         ↺ &nbsp;do...while loop
       </button>
     </div>
@@ -1024,7 +1078,7 @@
             <div class="c cy"></div>
             <div class="c cg"></div>
           </div>
-          <span>soal.js</span>
+          <span id="file-soal">soal.js</span>
         </div>
         <div class="soal-body">
           <div class="badge-row">
@@ -1035,7 +1089,7 @@
             </div>
           </div>
           <div class="task-box">
-            <div class="task-lbl">📋 Tugas</div>
+            <div class="task-lbl" id="ui-task-lbl">📋 Tugas</div>
             <div id="lvl-task"></div>
           </div>
         </div>
@@ -1048,13 +1102,17 @@
             <div class="c cy"></div>
             <div class="c cg"></div>
           </div>
-          <span>jawaban.js</span>
+          <span id="file-jawaban">jawaban.js</span>
         </div>
         <div class="editor-body">
           <textarea class="code-ed" id="editor" spellcheck="false"></textarea>
           <div class="btn-row">
-            <button class="btn btn-run" onclick="runCode()">▶ Run</button>
-            <button class="btn btn-reset" onclick="resetCode()">↺ Reset</button>
+            <button class="btn btn-run" id="btn-run" onclick="runCode()">
+              ▶ Run
+            </button>
+            <button class="btn btn-reset" id="btn-reset" onclick="resetCode()">
+              ↺ Reset
+            </button>
             <span class="shortcut-tip">Ctrl+Enter</span>
             <button
               class="btn btn-next"
@@ -1284,16 +1342,143 @@
       }
 
       /* ════════════════════════════════════════════
-   LEVEL DATA
+   I18N — KAMUS BAHASA (ID / EN)
+════════════════════════════════════════════ */
+      let lang = "id";
+
+      /* resolve field bilingual: {id,en} -> string sesuai lang */
+      function L(field) {
+        if (field && typeof field === "object" && !Array.isArray(field)) {
+          return field[lang] !== undefined ? field[lang] : field.id;
+        }
+        return field;
+      }
+
+      const UI = {
+        eyebrow: { id: "JavaScript Practice", en: "JavaScript Practice" },
+        titleHTML: {
+          while: {
+            id: "Loop Quest — <em>While</em> Edition",
+            en: "Loop Quest — <em>While</em> Edition",
+          },
+          dowhile: {
+            id: "Loop Quest — <em>Do...While</em> Edition",
+            en: "Loop Quest — <em>Do...While</em> Edition",
+          },
+        },
+        descHTML: {
+          id: `Isi bagian <code style="background:#fff;border:1px solid var(--bdr);padding:1px 6px;border-radius:5px;font-family:var(--mono);font-size:12px;color:var(--peach)">...</code> lalu klik Run — lihat hasilnya sebagai gambar lucu!`,
+          en: `Fill in the <code style="background:#fff;border:1px solid var(--bdr);padding:1px 6px;border-radius:5px;font-family:var(--mono);font-size:12px;color:var(--peach)">...</code> parts, then click Run — see the result as cute pictures!`,
+        },
+        tabWhile: { id: "⟳ &nbsp;while loop", en: "⟳ &nbsp;while loop" },
+        tabDowhile: {
+          id: "↺ &nbsp;do...while loop",
+          en: "↺ &nbsp;do...while loop",
+        },
+        fileSoal: { id: "soal.js", en: "problem.js" },
+        fileJawaban: { id: "jawaban.js", en: "answer.js" },
+        taskLbl: { id: "📋 Tugas", en: "📋 Task" },
+        btnRun: { id: "▶ Run", en: "▶ Run" },
+        btnReset: { id: "↺ Reset", en: "↺ Reset" },
+        btnNext: { id: "Berikutnya →", en: "Next →" },
+        problemWord: { id: "Soal", en: "Problem" },
+        emptyState: {
+          id: "▷ karakter akan muncul di sini",
+          en: "▷ characters will appear here",
+        },
+        statusIdle: {
+          id: "— tekan Run untuk melihat output",
+          en: "— press Run to see the output",
+        },
+        doneLabel: (n, t) =>
+          lang === "id" ? `${n} / ${t} selesai` : `${n} / ${t} done`,
+        statusIncomplete: {
+          id: "✗ kode belum lengkap",
+          en: "✗ code incomplete",
+        },
+        statusError: { id: "✗ error", en: "✗ error" },
+        statusNoOutput: { id: "✗ tidak ada output", en: "✗ no output" },
+        statusCorrect: (n) =>
+          lang === "id" ? `✓ ${n} output — BENAR!` : `✓ ${n} output — CORRECT!`,
+        statusWrong: (n) =>
+          lang === "id"
+            ? `✗ ${n} output — belum tepat`
+            : `✗ ${n} output — not quite`,
+        incompleteMsg: {
+          id: "Masih ada bagian <code>...</code> yang belum diisi.",
+          en: "There are still <code>...</code> parts to fill in.",
+        },
+        incompleteTip: {
+          id: "Ganti semua tanda ... dengan kode JavaScript yang sesuai.",
+          en: "Replace every ... with the correct JavaScript code.",
+        },
+        noOutputMsg: {
+          id: "Tidak ada output yang dihasilkan.",
+          en: "No output was produced.",
+        },
+        noOutputTip: {
+          id: "Pastikan kamu memanggil <code>print()</code> di dalam loop.",
+          en: "Make sure you call <code>print()</code> inside the loop.",
+        },
+        tipNotDefined: {
+          id: "Variabel belum dideklarasikan. Gunakan let atau var.",
+          en: "Variable not declared. Use let or var.",
+        },
+        tipSyntax: {
+          id: "Periksa penulisan: kurung, kurawal, dan titik koma.",
+          en: "Check your syntax: parentheses, braces, and semicolons.",
+        },
+        tipInfinite: {
+          id: "Kondisi loop tidak pernah false — pastikan nilai counter berubah.",
+          en: "The loop condition is never false — make sure the counter changes.",
+        },
+        guardMsg: (max) =>
+          lang === "id"
+            ? `Loop berjalan lebih dari ${max}x — kemungkinan infinite loop!`
+            : `Loop ran more than ${max}x — possible infinite loop!`,
+        fbCount: (got, expect) =>
+          lang === "id"
+            ? `❌ Output kamu: <strong>${got} baris</strong> — yang diharapkan: <strong>${expect} baris</strong>.<br>
+      Periksa nilai awal counter, kondisi loop, dan increment/decrement-mu.`
+            : `❌ Your output: <strong>${got} lines</strong> — expected: <strong>${expect} lines</strong>.<br>
+      Check your counter's starting value, loop condition, and increment/decrement.`,
+        fbValue: (got, k, a, b) =>
+          lang === "id"
+            ? `❌ Jumlah output sudah benar (${got} baris), tapi nilainya belum tepat.<br>
+      Output ke-${k}: kamu menghasilkan <code>${a}</code>, yang diharapkan <code>${b}</code>.<br>
+      Cek kembali nilai awal variabelmu.`
+            : `❌ The number of outputs is correct (${got} lines), but the values aren't right yet.<br>
+      Output #${k}: you produced <code>${a}</code>, expected <code>${b}</code>.<br>
+      Double-check your variable's starting value.`,
+        fbGeneric: {
+          id: "❌ Output belum sesuai. Cek kembali kondisi dan nilai awal loop-mu.",
+          en: "❌ Output isn't right yet. Recheck your loop condition and starting value.",
+        },
+        allDone: (catName) =>
+          lang === "id"
+            ? `🏆 <strong>Semua soal ${catName} selesai!</strong> Pindah ke kategori lain atau ulangi soal favoritmu.`
+            : `🏆 <strong>All ${catName} problems complete!</strong> Switch to the other category or replay your favorite.`,
+      };
+
+      /* ════════════════════════════════════════════
+   LEVEL DATA — bilingual (title/tags/task/successMsg)
 ════════════════════════════════════════════ */
       const WHILE_LEVELS = [
         {
           id: 1,
-          title: "Petik Apel!",
-          tags: ["while", "counter naik"],
-          task: `Buat while loop yang berjalan <strong>4 kali</strong>.<br>
+          title: { id: "Petik Apel!", en: "Pick the Apples!" },
+          tags: {
+            id: ["while", "counter naik"],
+            en: ["while", "counter up"],
+          },
+          task: {
+            id: `Buat while loop yang berjalan <strong>4 kali</strong>.<br>
       Setiap iterasi, panggil <code>print(i)</code>.<br>
       Output yang diharapkan: angka <strong>1, 2, 3, 4</strong> — dan lihat 4 apel muncul!`,
+            en: `Build a while loop that runs <strong>4 times</strong>.<br>
+      On each iteration, call <code>print(i)</code>.<br>
+      Expected output: the numbers <strong>1, 2, 3, 4</strong> — and watch 4 apples appear!`,
+          },
           starter: `let i = ...;
 
 while (i ... 4) {
@@ -1306,17 +1491,27 @@ while (i ... 4) {
           validate(out) {
             return out.length === 4 && out.every((v, i) => Number(v) === i + 1);
           },
-          successMsg:
-            "🍎 4 apel muncul! Loop berjalan 4x — variabel <code>i</code> naik dari 1 sampai 4, berhenti saat kondisi tidak terpenuhi lagi.",
+          successMsg: {
+            id: "🍎 4 apel muncul! Loop berjalan 4x — variabel <code>i</code> naik dari 1 sampai 4, berhenti saat kondisi tidak terpenuhi lagi.",
+            en: "🍎 4 apples appeared! The loop ran 4× — variable <code>i</code> goes from 1 to 4, stopping once the condition is no longer met.",
+          },
           solution: [1, 2, 3, 4],
         },
         {
           id: 2,
-          title: "Lebih Banyak Jeruk",
-          tags: ["while", "kondisi ≤"],
-          task: `Buat while loop yang menampilkan angka <strong>1 sampai 6</strong>.<br>
+          title: { id: "Lebih Banyak Jeruk", en: "More Oranges" },
+          tags: {
+            id: ["while", "kondisi ≤"],
+            en: ["while", "condition ≤"],
+          },
+          task: {
+            id: `Buat while loop yang menampilkan angka <strong>1 sampai 6</strong>.<br>
       Lihat berapa banyak jeruk yang muncul!<br>
       Perhatikan kondisi yang tepat agar tidak kurang atau lebih.`,
+            en: `Build a while loop that prints the numbers <strong>1 to 6</strong>.<br>
+      See how many oranges appear!<br>
+      Pick the right condition so it's not too few or too many.`,
+          },
           starter: `let i = ...;
 
 while (i ... ...) {
@@ -1329,16 +1524,25 @@ while (i ... ...) {
           validate(out) {
             return out.length === 6 && out.every((v, i) => Number(v) === i + 1);
           },
-          successMsg:
-            "🍊 6 jeruk berhasil! Kondisi <code>i &lt;= 6</code> memastikan loop jalan sampai angka 6 inklusif.",
+          successMsg: {
+            id: "🍊 6 jeruk berhasil! Kondisi <code>i &lt;= 6</code> memastikan loop jalan sampai angka 6 inklusif.",
+            en: "🍊 6 oranges done! The condition <code>i &lt;= 6</code> makes the loop run up to 6 inclusive.",
+          },
           solution: [1, 2, 3, 4, 5, 6],
         },
         {
           id: 3,
-          title: "Hitung Mundur Stroberi",
-          tags: ["while", "counter turun"],
-          task: `Stroberi-stroberi habis dimakan! Buat while loop yang menampilkan angka <strong>5 sampai 1</strong> (hitung mundur).<br>
+          title: { id: "Hitung Mundur Stroberi", en: "Strawberry Countdown" },
+          tags: {
+            id: ["while", "counter turun"],
+            en: ["while", "counter down"],
+          },
+          task: {
+            id: `Stroberi-stroberi habis dimakan! Buat while loop yang menampilkan angka <strong>5 sampai 1</strong> (hitung mundur).<br>
       Gunakan kondisi dan cara decrement yang sesuai.`,
+            en: `The strawberries are all eaten! Build a while loop that prints <strong>5 down to 1</strong> (counting down).<br>
+      Use the right condition and decrement.`,
+          },
           starter: `let i = ...;
 
 while (i ... 1) {
@@ -1350,16 +1554,25 @@ while (i ... 1) {
           validate(out) {
             return out.length === 5 && out.every((v, i) => Number(v) === 5 - i);
           },
-          successMsg:
-            "🍓 Loop mundur berhasil! Kondisi <code>i &gt;= 1</code> dan <code>i--</code> membuat counter turun setiap iterasi.",
+          successMsg: {
+            id: "🍓 Loop mundur berhasil! Kondisi <code>i &gt;= 1</code> dan <code>i--</code> membuat counter turun setiap iterasi.",
+            en: "🍓 Countdown done! The condition <code>i &gt;= 1</code> with <code>i--</code> makes the counter go down each iteration.",
+          },
           solution: [5, 4, 3, 2, 1],
         },
         {
           id: 4,
-          title: "Anggur Genap Saja",
-          tags: ["while", "step +2", "genap"],
-          task: `Buat while loop yang menampilkan angka <strong>genap</strong>: <strong>2, 4, 6, 8</strong>.<br>
+          title: { id: "Anggur Genap Saja", en: "Even Grapes Only" },
+          tags: {
+            id: ["while", "step +2", "genap"],
+            en: ["while", "step +2", "even"],
+          },
+          task: {
+            id: `Buat while loop yang menampilkan angka <strong>genap</strong>: <strong>2, 4, 6, 8</strong>.<br>
       Mulai dari 2, dan setiap iterasi <em>tambah 2</em> (bukan 1) supaya melompati angka ganjil.`,
+            en: `Build a while loop that prints the <strong>even</strong> numbers: <strong>2, 4, 6, 8</strong>.<br>
+      Start at 2 and <em>add 2</em> each iteration (not 1) to skip the odd numbers.`,
+          },
           starter: `let i = ...;
 
 while (i ... 8) {
@@ -1373,16 +1586,25 @@ while (i ... 8) {
               out.length === 4 && out.every((v, i) => Number(v) === 2 + i * 2)
             );
           },
-          successMsg:
-            "🍇 Mantap! Dengan <code>i += 2</code>, counter naik dua langkah tiap iterasi sehingga hanya angka genap yang muncul: 2, 4, 6, 8.",
+          successMsg: {
+            id: "🍇 Mantap! Dengan <code>i += 2</code>, counter naik dua langkah tiap iterasi sehingga hanya angka genap yang muncul: 2, 4, 6, 8.",
+            en: "🍇 Nice! With <code>i += 2</code>, the counter jumps two steps each time, so only even numbers appear: 2, 4, 6, 8.",
+          },
           solution: [2, 4, 6, 8],
         },
         {
           id: 5,
-          title: "Keranjang Buah Campur",
-          tags: ["while", "1 → 7", "tantangan"],
-          task: `Tantangan terakhir! Buat while loop yang menampilkan angka <strong>1 sampai 7</strong>.<br>
+          title: { id: "Keranjang Buah Campur", en: "Mixed Fruit Basket" },
+          tags: {
+            id: ["while", "1 → 7", "tantangan"],
+            en: ["while", "1 → 7", "challenge"],
+          },
+          task: {
+            id: `Tantangan terakhir! Buat while loop yang menampilkan angka <strong>1 sampai 7</strong>.<br>
       Setiap angka memunculkan buah yang berbeda-beda. Pastikan jumlah dan urutannya pas!`,
+            en: `Final challenge! Build a while loop that prints the numbers <strong>1 to 7</strong>.<br>
+      Each number shows a different fruit. Make sure the count and order are right!`,
+          },
           starter: `let i = ...;
 
 while (i ... 7) {
@@ -1394,8 +1616,10 @@ while (i ... 7) {
           validate(out) {
             return out.length === 7 && out.every((v, i) => Number(v) === i + 1);
           },
-          successMsg:
-            "🧺 Keranjang penuh! 7 buah berbeda muncul karena loop berjalan 7x dari 1 sampai 7. Kamu sudah menguasai while loop!",
+          successMsg: {
+            id: "🧺 Keranjang penuh! 7 buah berbeda muncul karena loop berjalan 7x dari 1 sampai 7. Kamu sudah menguasai while loop!",
+            en: "🧺 Basket full! 7 different fruits appear because the loop runs 7× from 1 to 7. You've mastered the while loop!",
+          },
           solution: [1, 2, 3, 4, 5, 6, 7],
         },
       ];
@@ -1403,10 +1627,17 @@ while (i ... 7) {
       const DOWHILE_LEVELS = [
         {
           id: 1,
-          title: "Do Dulu, Cek Belakangan",
-          tags: ["do...while", "eksekusi pertama"],
-          task: `Gunakan <strong>do...while</strong> untuk menampilkan angka <strong>1 sampai 3</strong>.<br>
+          title: { id: "Do Dulu, Cek Belakangan", en: "Do First, Check Later" },
+          tags: {
+            id: ["do...while", "eksekusi pertama"],
+            en: ["do...while", "first run"],
+          },
+          task: {
+            id: `Gunakan <strong>do...while</strong> untuk menampilkan angka <strong>1 sampai 3</strong>.<br>
       Perhatikan struktur: blok <code>do { }</code> dijalankan <em>dulu</em>, kondisi dicek <em>sesudahnya</em>.`,
+            en: `Use <strong>do...while</strong> to print the numbers <strong>1 to 3</strong>.<br>
+      Notice the structure: the <code>do { }</code> block runs <em>first</em>, the condition is checked <em>afterwards</em>.`,
+          },
           starter: `let i = ...;
 
 do {
@@ -1420,15 +1651,24 @@ do {
           validate(out) {
             return out.length === 3 && out.every((v, i) => Number(v) === i + 1);
           },
-          successMsg:
-            "🍎 do...while berjalan 3x! Blok <code>do</code> pasti dijalankan minimal 1 kali sebelum kondisi diperiksa.",
+          successMsg: {
+            id: "🍎 do...while berjalan 3x! Blok <code>do</code> pasti dijalankan minimal 1 kali sebelum kondisi diperiksa.",
+            en: "🍎 do...while ran 3×! The <code>do</code> block always runs at least once before the condition is checked.",
+          },
         },
         {
           id: 2,
-          title: "Tetap Jalan Sekali!",
-          tags: ["do...while", "kondisi false dari awal"],
-          task: `Ini soal konsep penting! Variabel <code>x</code> mulai dari <strong>10</strong>, kondisi <code>x &lt; 5</code>.<br>
+          title: { id: "Tetap Jalan Sekali!", en: "Runs Once Anyway!" },
+          tags: {
+            id: ["do...while", "kondisi false dari awal"],
+            en: ["do...while", "false from the start"],
+          },
+          task: {
+            id: `Ini soal konsep penting! Variabel <code>x</code> mulai dari <strong>10</strong>, kondisi <code>x &lt; 5</code>.<br>
       Kondisi sudah <em>false</em> sejak awal — tapi do...while tetap jalan. Berapa buah yang muncul?`,
+            en: `An important concept! Variable <code>x</code> starts at <strong>10</strong>, condition <code>x &lt; 5</code>.<br>
+      The condition is already <em>false</em> from the start — but do...while still runs. How many fruits appear?`,
+          },
           starter: `let x = ...;
 
 do {
@@ -1441,15 +1681,27 @@ do {
           validate(out) {
             return out.length === 1 && Number(out[0]) === 10;
           },
-          successMsg:
-            "🍋 1 buah! do...while TETAP jalan 1x meski kondisi sudah false dari awal. Ini perbedaan utamanya dengan while biasa.",
+          successMsg: {
+            id: "🍋 1 buah! do...while TETAP jalan 1x meski kondisi sudah false dari awal. Ini perbedaan utamanya dengan while biasa.",
+            en: "🍋 1 fruit! do...while STILL runs once even though the condition was false from the start. That's the key difference from a regular while.",
+          },
         },
         {
           id: 3,
-          title: "Pir & Persik Bergantian",
-          tags: ["do...while", "counter", "variasi"],
-          task: `Gunakan <strong>do...while</strong> untuk menampilkan angka <strong>1 sampai 5</strong>.<br>
+          title: {
+            id: "Pir & Persik Bergantian",
+            en: "Pears & Peaches Alternating",
+          },
+          tags: {
+            id: ["do...while", "counter", "variasi"],
+            en: ["do...while", "counter", "variation"],
+          },
+          task: {
+            id: `Gunakan <strong>do...while</strong> untuk menampilkan angka <strong>1 sampai 5</strong>.<br>
       Kali ini outputnya pir dan persik bergantian!`,
+            en: `Use <strong>do...while</strong> to print the numbers <strong>1 to 5</strong>.<br>
+      This time the output alternates between pears and peaches!`,
+          },
           starter: `let i = ...;
 
 do {
@@ -1465,15 +1717,24 @@ do {
           validate(out) {
             return out.length === 5 && out.every((v, i) => Number(v) === i + 1);
           },
-          successMsg:
-            "🍐🍑 do...while berjalan 5x — hasilnya pir dan persik bergantian sesuai jumlah iterasi.",
+          successMsg: {
+            id: "🍐🍑 do...while berjalan 5x — hasilnya pir dan persik bergantian sesuai jumlah iterasi.",
+            en: "🍐🍑 do...while ran 5× — the result alternates pears and peaches based on the iteration count.",
+          },
         },
         {
           id: 4,
-          title: "Semangka Mundur",
-          tags: ["do...while", "counter turun"],
-          task: `Gunakan <strong>do...while</strong> untuk hitung mundur dari <strong>4 sampai 1</strong>.<br>
+          title: { id: "Semangka Mundur", en: "Watermelon Countdown" },
+          tags: {
+            id: ["do...while", "counter turun"],
+            en: ["do...while", "counter down"],
+          },
+          task: {
+            id: `Gunakan <strong>do...while</strong> untuk hitung mundur dari <strong>4 sampai 1</strong>.<br>
       Blok <code>do</code> jalan dulu, lalu kondisi <code>i &gt;= 1</code> dicek. Jangan lupa <code>i--</code>.`,
+            en: `Use <strong>do...while</strong> to count down from <strong>4 to 1</strong>.<br>
+      The <code>do</code> block runs first, then the condition <code>i &gt;= 1</code> is checked. Don't forget <code>i--</code>.`,
+          },
           starter: `let i = ...;
 
 do {
@@ -1486,15 +1747,24 @@ do {
           validate(out) {
             return out.length === 4 && out.every((v, i) => Number(v) === 4 - i);
           },
-          successMsg:
-            "🍉 Hitung mundur berhasil! do...while juga bisa turun: <code>i--</code> tiap iterasi dan berhenti saat <code>i &gt;= 1</code> jadi false.",
+          successMsg: {
+            id: "🍉 Hitung mundur berhasil! do...while juga bisa turun: <code>i--</code> tiap iterasi dan berhenti saat <code>i &gt;= 1</code> jadi false.",
+            en: "🍉 Countdown done! do...while can go down too: <code>i--</code> each iteration, stopping when <code>i &gt;= 1</code> becomes false.",
+          },
         },
         {
           id: 5,
-          title: "Panen Besar Buah",
-          tags: ["do...while", "1 → 6", "tantangan"],
-          task: `Tantangan penutup! Gunakan <strong>do...while</strong> untuk menampilkan angka <strong>1 sampai 6</strong>.<br>
+          title: { id: "Panen Besar Buah", en: "Big Fruit Harvest" },
+          tags: {
+            id: ["do...while", "1 → 6", "tantangan"],
+            en: ["do...while", "1 → 6", "challenge"],
+          },
+          task: {
+            id: `Tantangan penutup! Gunakan <strong>do...while</strong> untuk menampilkan angka <strong>1 sampai 6</strong>.<br>
       Setiap angka memunculkan buah berbeda. Pastikan jumlah dan urutannya tepat!`,
+            en: `Closing challenge! Use <strong>do...while</strong> to print the numbers <strong>1 to 6</strong>.<br>
+      Each number shows a different fruit. Make sure the count and order are right!`,
+          },
           starter: `let i = ...;
 
 do {
@@ -1507,8 +1777,10 @@ do {
           validate(out) {
             return out.length === 6 && out.every((v, i) => Number(v) === i + 1);
           },
-          successMsg:
-            "🧺 Panen besar! 6 buah berbeda muncul — kamu sudah memahami do...while dengan baik. Selamat!",
+          successMsg: {
+            id: "🧺 Panen besar! 6 buah berbeda muncul — kamu sudah memahami do...while dengan baik. Selamat!",
+            en: "🧺 Big harvest! 6 different fruits appear — you understand do...while well now. Congratulations!",
+          },
         },
       ];
 
@@ -1535,8 +1807,67 @@ do {
             (i === 0 && cat === "while") || (i === 1 && cat === "dowhile"),
           );
         });
+        document.getElementById("ui-title").innerHTML = L(UI.titleHTML[cat]);
         renderStrip();
         loadLevel(0);
+      }
+
+      /* ════════════════════════════════════════════
+   GANTI BAHASA
+════════════════════════════════════════════ */
+      function applyStaticLang() {
+        document.getElementById("ui-eyebrow").textContent = L(UI.eyebrow);
+        document.getElementById("ui-title").innerHTML = L(
+          UI.titleHTML[category],
+        );
+        document.getElementById("ui-desc").innerHTML = L(UI.descHTML);
+        document.getElementById("tab-while").innerHTML = L(UI.tabWhile);
+        document.getElementById("tab-dowhile").innerHTML = L(UI.tabDowhile);
+        document.getElementById("file-soal").textContent = L(UI.fileSoal);
+        document.getElementById("file-jawaban").textContent = L(UI.fileJawaban);
+        document.getElementById("ui-task-lbl").textContent = L(UI.taskLbl);
+        document.getElementById("btn-run").innerHTML = L(UI.btnRun);
+        document.getElementById("btn-reset").innerHTML = L(UI.btnReset);
+        document.getElementById("btn-next").innerHTML = L(UI.btnNext);
+      }
+
+      function setLang(l) {
+        if (l === lang) return;
+        lang = l;
+        document
+          .getElementById("lang-id")
+          .classList.toggle("active", l === "id");
+        document
+          .getElementById("lang-en")
+          .classList.toggle("active", l === "en");
+
+        applyStaticLang();
+
+        /* segarkan teks soal TANPA mereset editor siswa */
+        const lvl = getCurrent();
+        document.getElementById("lvl-title").textContent = L(lvl.title);
+        document.getElementById("lvl-tags").innerHTML = L(lvl.tags)
+          .map((t) => `<span class="tag">${t}</span>`)
+          .join("");
+        document.getElementById("lvl-task").innerHTML = L(lvl.task);
+
+        /* jika pesan sukses sedang tampil, terjemahkan ulang */
+        const sb = document.getElementById("success-bar");
+        if (sb.classList.contains("show")) {
+          sb.innerHTML = `✅ ${L(lvl.successMsg)}`;
+        }
+        /* feedback salah bersifat dinamis — sembunyikan agar tidak basi */
+        document.getElementById("wrong-bar").classList.remove("show");
+
+        /* jika output masih placeholder, segarkan teksnya */
+        const canvas = document.getElementById("out-canvas");
+        if (canvas.querySelector(".empty-state")) {
+          canvas.innerHTML = `<div class="empty-state">${L(UI.emptyState)}</div>`;
+          setStatus(L(UI.statusIdle));
+        }
+
+        renderStrip();
+        updateProgress();
       }
 
       function renderStrip() {
@@ -1559,7 +1890,7 @@ do {
               .join(" ");
             const onclick = unlocked ? `onclick="jumpLevel(${i})"` : "";
             const icon = isDone ? "✓ " : !unlocked ? "🔒 " : "";
-            return `<button class="${cls}" ${onclick}>${icon}Soal ${l.id}</button>`;
+            return `<button class="${cls}" ${onclick}>${icon}${L(UI.problemWord)} ${l.id}</button>`;
           })
           .join("");
       }
@@ -1577,11 +1908,11 @@ do {
         currentIdx = idx;
         const lvl = getCurrent();
         document.getElementById("badge-num").textContent = lvl.id;
-        document.getElementById("lvl-title").textContent = lvl.title;
-        document.getElementById("lvl-tags").innerHTML = lvl.tags
+        document.getElementById("lvl-title").textContent = L(lvl.title);
+        document.getElementById("lvl-tags").innerHTML = L(lvl.tags)
           .map((t) => `<span class="tag">${t}</span>`)
           .join("");
-        document.getElementById("lvl-task").innerHTML = lvl.task;
+        document.getElementById("lvl-task").innerHTML = L(lvl.task);
         const ed = document.getElementById("editor");
         ed.value = lvl.starter;
         ed.className = "code-ed";
@@ -1602,8 +1933,10 @@ do {
           n = done[category].size;
         document.getElementById("prog-fill").style.width =
           (total ? (n / total) * 100 : 0) + "%";
-        document.getElementById("prog-label").textContent =
-          `${n} / ${total} selesai`;
+        document.getElementById("prog-label").textContent = UI.doneLabel(
+          n,
+          total,
+        );
       }
 
       function nextLevel() {
@@ -1612,8 +1945,9 @@ do {
           loadLevel(currentIdx + 1);
           window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
+          const catName = category === "while" ? "while loop" : "do...while";
           document.getElementById("success-bar").innerHTML =
-            `🏆 <strong>Semua soal ${category === "while" ? "while loop" : "do...while"} selesai!</strong> Pindah ke kategori lain atau ulangi soal favoritmu.`;
+            UI.allDone(catName);
           document.getElementById("success-bar").classList.add("show");
           document.getElementById("btn-next").style.display = "none";
         }
@@ -1632,10 +1966,10 @@ do {
         if (code.includes("...")) {
           showErr({
             name: "IncompleteCode",
-            message: "Masih ada bagian <code>...</code> yang belum diisi.",
-            tip: "Ganti semua tanda ... dengan kode JavaScript yang sesuai.",
+            message: L(UI.incompleteMsg),
+            tip: L(UI.incompleteTip),
           });
-          setStatus("✗ kode belum lengkap");
+          setStatus(L(UI.statusIncomplete));
           return;
         }
 
@@ -1656,7 +1990,7 @@ do {
         } catch (e) {
           ed.className = "code-ed bad";
           showErr(fmtErr(e));
-          setStatus("✗ error");
+          setStatus(L(UI.statusError));
           return;
         }
 
@@ -1664,10 +1998,10 @@ do {
           ed.className = "code-ed bad";
           showErr({
             name: "NoOutput",
-            message: "Tidak ada output yang dihasilkan.",
-            tip: "Pastikan kamu memanggil <code>print()</code> di dalam loop.",
+            message: L(UI.noOutputMsg),
+            tip: L(UI.noOutputTip),
           });
-          setStatus("✗ tidak ada output");
+          setStatus(L(UI.statusNoOutput));
           return;
         }
 
@@ -1680,10 +2014,10 @@ do {
 
         if (passed) {
           ed.className = "code-ed ok";
-          setStatus(`✓ ${outputs.length} output — BENAR!`);
+          setStatus(UI.statusCorrect(outputs.length));
           done[category].add(currentIdx);
           document.getElementById("success-bar").innerHTML =
-            `✅ ${lvl.successMsg}`;
+            `✅ ${L(lvl.successMsg)}`;
           document.getElementById("success-bar").classList.add("show");
           document.getElementById("wrong-bar").classList.remove("show");
           document.getElementById("btn-next").style.display =
@@ -1692,7 +2026,7 @@ do {
           updateProgress();
         } else {
           ed.className = "code-ed bad";
-          setStatus(`✗ ${outputs.length} output — belum tepat`);
+          setStatus(UI.statusWrong(outputs.length));
           /* feedback spesifik: bandingkan output vs ekspektasi */
           const wrongFeedback = buildWrongFeedback(outputs, lvl);
           document.getElementById("wrong-bar").innerHTML = wrongFeedback;
@@ -1707,8 +2041,7 @@ do {
 
         /* cek jumlah */
         if (got !== expect) {
-          return `❌ Output kamu: <strong>${got} baris</strong> — yang diharapkan: <strong>${expect} baris</strong>.<br>
-      Periksa nilai awal counter, kondisi loop, dan increment/decrement-mu.`;
+          return UI.fbCount(got, expect);
         }
 
         /* jumlah benar, nilai salah */
@@ -1716,16 +2049,19 @@ do {
           (v, i) => lvl.solution && Number(v) !== lvl.solution[i],
         );
         if (firstWrong !== -1 && lvl.solution) {
-          return `❌ Jumlah output sudah benar (${got} baris), tapi nilainya belum tepat.<br>
-      Output ke-${firstWrong + 1}: kamu menghasilkan <code>${outputs[firstWrong]}</code>, yang diharapkan <code>${lvl.solution[firstWrong]}</code>.<br>
-      Cek kembali nilai awal variabelmu.`;
+          return UI.fbValue(
+            got,
+            firstWrong + 1,
+            outputs[firstWrong],
+            lvl.solution[firstWrong],
+          );
         }
 
-        return `❌ Output belum sesuai. Cek kembali kondisi dan nilai awal loop-mu.`;
+        return L(UI.fbGeneric);
       }
 
       function guardCode(code, max) {
-        const g = `if(typeof __lc__==='undefined'){var __lc__=0;}__lc__++;if(__lc__>${max}){throw new RangeError("Loop berjalan lebih dari ${max}x — kemungkinan infinite loop!");}`;
+        const g = `if(typeof __lc__==='undefined'){var __lc__=0;}__lc__++;if(__lc__>${max}){throw new RangeError(${JSON.stringify(UI.guardMsg(max))});}`;
         return code
           .replace(/\bwhile\s*\([^)]*\)\s*\{/g, (m) => m + "\n" + g)
           .replace(/\bdo\s*\{/g, (m) => m + "\n" + g);
@@ -1734,13 +2070,10 @@ do {
       function fmtErr(e) {
         const msg = e.message || String(e);
         let tip = "";
-        if (msg.includes("is not defined"))
-          tip = "Variabel belum dideklarasikan. Gunakan let atau var.";
+        if (msg.includes("is not defined")) tip = L(UI.tipNotDefined);
         else if (msg.includes("Unexpected") || e instanceof SyntaxError)
-          tip = "Periksa penulisan: kurung, kurawal, dan titik koma.";
-        else if (msg.includes("lebih dari"))
-          tip =
-            "Kondisi loop tidak pernah false — pastikan nilai counter berubah.";
+          tip = L(UI.tipSyntax);
+        else if (/infinite/i.test(msg)) tip = L(UI.tipInfinite);
         return { name: e.name || "Error", message: msg, tip };
       }
 
@@ -1762,8 +2095,8 @@ do {
 
       function clearOutput() {
         document.getElementById("out-canvas").innerHTML =
-          '<div class="empty-state">▷ karakter akan muncul di sini</div>';
-        setStatus("— tekan Run untuk melihat output");
+          `<div class="empty-state">${L(UI.emptyState)}</div>`;
+        setStatus(L(UI.statusIdle));
       }
       function setStatus(s) {
         document.getElementById("out-status").textContent = s;
@@ -1807,6 +2140,7 @@ do {
         });
 
       /* BOOT */
+      applyStaticLang();
       renderStrip();
       loadLevel(0);
     </script>
